@@ -1,0 +1,299 @@
+{
+  "contact": {
+    "form": {
+      "name": "Nom",
+      "email": "Adresse e-mail",
+      "phone": "Numéro de téléphone",
+      "message": "Message",
+      "post_success": "Merci de nous avoir contactés. Nous vous répondrons sous peu.",
+      "required": "(obligatoire)"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Passer au contenu"
+  },
+  "404": {
+    "title": "404",
+    "not_found": "Page introuvable.",
+    "back_to_shopping": "Retour à la boutique"
+  },
+  "blog": {
+    "article_comments": "Commentaires",
+    "article_metadata_html": "{{ date }} par {{ author }}",
+    "comment_form_body": "Commentaire",
+    "comment_form_email": "Adresse e-mail",
+    "comment_form_name": "Nom",
+    "comment_form_submit": "Publier",
+    "comment_form_title": "Ajouter un commentaire",
+    "comment_submitted": "Votre commentaire a été soumis et est en attente de modération.",
+    "read_more": "Lire la suite",
+    "no_articles": "Aucun article trouvé.",
+    "pagination": "Navigation du blog",
+    "read_more_title": "Lire {{ title }}"
+  },
+  "cart": {
+    "checkout": "Commander",
+    "title": "Panier",
+    "update": "Mettre à jour",
+    "remove": "Supprimer",
+    "subtotal": "Sous-total",
+    "continue_shopping": "Continuer mes achats",
+    "secure_checkout": "Paiement sécurisé",
+    "empty_title": "Votre panier est vide",
+    "empty_message": "Ajoutez quelque chose que vous aimez et il apparaîtra ici.",
+    "item_count": {
+      "one": "{{ count }} article",
+      "other": "{{ count }} articles"
+    },
+    "order_summary": "Récapitulatif de la commande",
+    "taxes_included_and_shipping_policy_html": "Taxes incluses.",
+    "taxes_and_shipping_policy_at_checkout_html": "Taxes et frais de livraison calculés à la caisse.",
+    "order_note": "Note de commande",
+    "order_note_placeholder": "Ajoutez des notes de livraison ou des instructions spéciales",
+    "quantity_for_product": "Quantité pour {{ product }}",
+    "decrease_quantity": "Diminuer la quantité",
+    "increase_quantity": "Augmenter la quantité",
+    "drawer": {
+      "close": "Fermer le panier",
+      "eyebrow": "Votre panier",
+      "loading": "Chargement du panier",
+      "upgrade_complete": "Vous avez débloqué toutes les offres disponibles.",
+      "upgrade_remaining_html": "{{ amount }} pour {{ reward }}",
+      "live_region": "Panier mis à jour. {{ count }} articles. Sous-total {{ subtotal }}."
+    },
+    "general": {
+      "discount": "Remise"
+    }
+  },
+  "general": {
+    "close": "Fermer",
+    "customer": "Client",
+    "breadcrumb": "Fil d'Ariane",
+    "tags": "Tags",
+    "view_all": "Voir tout",
+    "vendor_placeholder": "Marque",
+    "product_placeholder": "Produit",
+    "collection_placeholder": "Collection",
+    "apply": "Appliquer"
+  },
+  "customers": {
+    "login": {
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "title": "Connexion"
+    }
+  },
+  "collections": {
+    "title": "Collections",
+    "product_count": {
+      "one": "{{ count }} produit",
+      "other": "{{ count }} produits"
+    },
+    "sort_by": "Trier par",
+    "filters": "Filtres",
+    "clear_filters": "Effacer les filtres",
+    "apply_filters": "Appliquer les filtres",
+    "price_from": "Prix minimum",
+    "price_to": "Prix maximum",
+    "no_products_title": "Aucun produit trouvé",
+    "no_products_message": "Essayez d'ajuster ou d'effacer vos filtres."
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Ajouter à Apple Wallet",
+    "card": "Carte cadeau",
+    "expired": "Cette carte cadeau a expiré",
+    "expires_on": "Expire le {{ expires_on }}",
+    "use_at_checkout": "Utilisez cette carte cadeau lors du paiement",
+    "qr_image_alt": "Code QR"
+  },
+  "password": {
+    "title": "Cette boutique est privée",
+    "password": "Mot de passe",
+    "enter": "Entrer"
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Rechercher des articles, pages ou produits",
+    "submit": "Rechercher",
+    "no_results_html": "Aucun résultat pour {{ terms }}",
+    "results_for_html": "{{ count }} résultat(s) pour {{ terms }}",
+    "empty_title": "Aucun résultat trouvé",
+    "results_label": "Résultats",
+    "result_type_product": "Produit",
+    "result_type_collection": "Collection",
+    "result_type_article": "Article",
+    "result_type_page": "Page",
+    "searching": "Recherche en cours...",
+    "unavailable": "La recherche est temporairement indisponible."
+  },
+  "product": {
+    "add_to_cart": "Ajouter au panier",
+    "adding_to_cart": "Ajout en cours...",
+    "sold_out": "Épuisé",
+    "unavailable": "Indisponible",
+    "variant": "Variante",
+    "quantity": "Quantité",
+    "description": "Description",
+    "details": "Détails",
+    "related_products": "Vous aimerez aussi",
+    "customer_avatar_alt": "Client",
+    "sku": "Réf. : {{ value }}",
+    "back_to_collection": "Retour à la collection",
+    "rating": {
+      "out_of_stars": "{{ value }} sur 5 étoiles",
+      "reviews": "{{ count }} avis"
+    },
+    "gallery": {
+      "open_media": "Ouvrir le média pour {{ title }}",
+      "zoom": "Agrandir",
+      "unavailable": "Média indisponible",
+      "previous": "Média précédent",
+      "show_media": "Afficher le média {{ index }}",
+      "go_to_media": "Aller au média {{ index }}",
+      "next": "Média suivant",
+      "close_zoomed_media": "Fermer le média agrandi"
+    },
+    "inventory": {
+      "in_stock_count": "{{ count }} en stock",
+      "available_to_order": "Disponible à la commande"
+    },
+    "price": {
+      "savings_badge_percent": "Économisez {{ value }}",
+      "savings_badge_amount": "Économisez {{ value }}",
+      "tax_included": "Taxes incluses."
+    },
+    "pickup_availability": "Disponibilité du retrait",
+    "pickup_available": "Retrait disponible",
+    "pickup_unavailable": "Actuellement indisponible"
+  },
+  "newsletter": {
+    "success": "Merci pour votre inscription."
+  },
+  "sections": {
+    "hero": {
+      "previous_slide": "Diapositive précédente",
+      "next_slide": "Diapositive suivante",
+      "go_to_slide": "Aller à la diapositive {{ index }}",
+      "slide_pagination": "Pagination du carrousel"
+    },
+    "announcement_bar": {
+      "previous": "Annonce précédente",
+      "region_label": "Annonces",
+      "next": "Annonce suivante"
+    },
+    "trustpilot": {
+      "stars_label": "étoiles"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Mon compte",
+      "details": "Détails du compte",
+      "orders": "Historique des commandes",
+      "no_orders": "Vous n'avez pas encore passé de commande.",
+      "default_address": "Adresse par défaut",
+      "manage_addresses": "Gérer les adresses",
+      "log_out": "Se déconnecter",
+      "return": "Retour au compte"
+    },
+    "activate_account": {
+      "title": "Activez votre compte",
+      "subtext": "Créez un mot de passe pour activer votre compte.",
+      "password": "Mot de passe",
+      "password_confirm": "Confirmer le mot de passe",
+      "submit": "Activer le compte",
+      "cancel": "Annuler",
+      "required": "(obligatoire)"
+    },
+    "addresses": {
+      "title": "Vos adresses",
+      "saved_addresses": "Adresses enregistrées",
+      "add_new": "Ajouter une nouvelle adresse",
+      "add": "Ajouter une adresse",
+      "update": "Mettre à jour l'adresse",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "delete_confirm": "Voulez-vous vraiment supprimer cette adresse ?",
+      "default": "Par défaut",
+      "set_default": "Définir comme adresse par défaut",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "company": "Entreprise",
+      "address1": "Adresse",
+      "address2": "Appartement, bureau, etc.",
+      "city": "Ville",
+      "country": "Pays",
+      "province": "État / Province",
+      "province_select": "Sélectionner",
+      "zip": "Code postal",
+      "phone": "Téléphone",
+      "cancel": "Annuler"
+    },
+    "login": {
+      "title": "Connexion",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "sign_in": "Se connecter",
+      "forgot_password": "Mot de passe oublié ?",
+      "no_account": "Vous n'avez pas de compte ?",
+      "create_account": "Créer un compte"
+    },
+    "order": {
+      "title": "Commande {{ name }}",
+      "date": "{{ date }}",
+      "fulfilled_at": "Traitée le {{ date }}",
+      "fulfillment_status": "Statut du traitement",
+      "items": "Articles",
+      "no_shipping_address": "Aucune adresse de livraison pour cette commande.",
+      "payment_status": "Statut du paiement",
+      "price": "Prix",
+      "product": "Produit",
+      "quantity": "Qté",
+      "shipping": "Livraison",
+      "shipping_address": "Adresse de livraison",
+      "subtotal": "Sous-total",
+      "tax": "Taxes",
+      "total": "Total",
+      "track_shipment": "Suivre l'envoi",
+      "billing_address": "Adresse de facturation"
+    },
+    "orders": {
+      "date": "Date",
+      "fulfillment_status": "Traitement",
+      "order_number": "Commande",
+      "payment_status": "Paiement",
+      "total": "Total",
+      "unfulfilled": "Non traitée"
+    },
+    "recover_password": {
+      "title": "Réinitialisez votre mot de passe",
+      "subtext": "Nous vous enverrons un e-mail pour réinitialiser votre mot de passe.",
+      "submit": "Envoyer",
+      "cancel": "Annuler",
+      "success": "Si un compte existe pour cet e-mail, un lien de réinitialisation a été envoyé."
+    },
+    "register": {
+      "title": "Créer un compte",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "submit": "Créer un compte",
+      "sign_in": "Se connecter",
+      "have_account": "Vous avez déjà un compte ?",
+      "required": "(obligatoire)"
+    },
+    "reset_password": {
+      "title": "Réinitialisez votre mot de passe",
+      "subtext": "Saisissez un nouveau mot de passe pour votre compte.",
+      "password": "Nouveau mot de passe",
+      "password_confirm": "Confirmer le nouveau mot de passe",
+      "submit": "Réinitialiser le mot de passe",
+      "required": "(obligatoire)"
+    }
+  },
+  "footer": {
+    "payment_methods": "Moyens de paiement acceptés"
+  }
+}
