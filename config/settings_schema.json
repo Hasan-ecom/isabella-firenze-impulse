@@ -1,0 +1,797 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Wealth Kings Custom Thema",
+    "theme_version": "1.0.0",
+    "theme_author": "YC Web Design",
+    "theme_documentation_url": "https://ycwebdesign.com/theme-docs",
+    "theme_support_url": "https://ycwebdesign.com/theme-support"
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "16 x 16px .png recommended"
+      }
+    ]
+  },
+  {
+    "name": "t:general.typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:general.fonts"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_primary_font",
+        "default": "work_sans_n4",
+        "label": "Body font"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "default": "work_sans_n4",
+        "label": "Heading font"
+      },
+      {
+        "type": "header",
+        "content": "Body text"
+      },
+      {
+        "type": "range",
+        "id": "type_body_size",
+        "min": 14,
+        "max": 22,
+        "step": 1,
+        "unit": "px",
+        "label": "Base body size",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "type_body_line_height",
+        "min": 120,
+        "max": 200,
+        "step": 5,
+        "unit": "%",
+        "label": "Body line height",
+        "default": 160
+      },
+      {
+        "type": "range",
+        "id": "type_body_letter_spacing",
+        "min": -5,
+        "max": 10,
+        "step": 1,
+        "unit": "%",
+        "label": "Body letter spacing",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "range",
+        "id": "type_heading_line_height",
+        "min": 90,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading line height",
+        "default": 110
+      },
+      {
+        "type": "range",
+        "id": "type_heading_letter_spacing",
+        "min": -10,
+        "max": 20,
+        "step": 1,
+        "unit": "%",
+        "label": "Heading letter spacing",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "t:general.layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "max_page_width",
+        "label": "t:labels.page_width",
+        "min": 1200,
+        "max": 1800,
+        "step": 20,
+        "unit": "px",
+        "default": 1440
+      },
+      {
+        "type": "range",
+        "id": "min_page_margin",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "t:labels.page_margin",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "theme_corner_radius",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "label": "Theme corner radius",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "product_tile_corner_radius",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "label": "Product tile corner radius",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Global defaults"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "default": "#FFFFFF",
+        "label": "t:labels.background"
+      },
+      {
+        "type": "color",
+        "id": "foreground_color",
+        "default": "#000000",
+        "label": "t:labels.foreground"
+      },
+      {
+        "type": "color",
+        "id": "sale_price_color",
+        "default": "#000000",
+        "label": "Sale price color"
+      },
+      {
+        "type": "range",
+        "id": "input_corner_radius",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "t:labels.input_corner_radius",
+        "default": 4
+      },
+      {
+        "type": "header",
+        "content": "Color schemes"
+      },
+      {
+        "type": "paragraph",
+        "content": "Assign a scheme to each section via its settings. Four schemes are pre-loaded: Light, Dark, Warm, and Blush."
+      },
+      {
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          {
+            "type": "color",
+            "id": "background",
+            "label": "Background",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "text",
+            "label": "Text",
+            "default": "#000000"
+          }
+        ],
+        "role": {
+          "background": "background",
+          "text": "text",
+          "links": "text",
+          "icons": "text",
+          "primary_button": "text",
+          "on_primary_button": "background",
+          "primary_button_border": "text",
+          "secondary_button": "background",
+          "on_secondary_button": "text",
+          "secondary_button_border": "text"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "range",
+        "id": "button_corner_radius",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "unit": "px",
+        "label": "Button corner radius",
+        "default": 24
+      },
+      {
+        "type": "color",
+        "id": "button_primary_background",
+        "default": "#000000",
+        "label": "Primary button background"
+      },
+      {
+        "type": "color",
+        "id": "button_primary_text",
+        "default": "#FFFFFF",
+        "label": "Primary button text"
+      },
+      {
+        "type": "color",
+        "id": "button_primary_border",
+        "default": "#000000",
+        "label": "Primary button border"
+      },
+      {
+        "type": "color",
+        "id": "button_primary_background_hover",
+        "default": "#FFFFFF",
+        "label": "Primary button hover background"
+      },
+      {
+        "type": "color",
+        "id": "button_primary_text_hover",
+        "default": "#000000",
+        "label": "Primary button hover text"
+      },
+      {
+        "type": "color",
+        "id": "button_primary_border_hover",
+        "default": "#000000",
+        "label": "Primary button hover border"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_background",
+        "default": "#FFFFFF",
+        "label": "Secondary button background"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_text",
+        "default": "#000000",
+        "label": "Secondary button text"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_border",
+        "default": "#000000",
+        "label": "Secondary button border"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_background_hover",
+        "default": "#000000",
+        "label": "Secondary button hover background"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_text_hover",
+        "default": "#FFFFFF",
+        "label": "Secondary button hover text"
+      },
+      {
+        "type": "color",
+        "id": "button_secondary_border_hover",
+        "default": "#000000",
+        "label": "Secondary button hover border"
+      }
+    ]
+  },
+    {
+      "name": "Product tiles",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "checkbox",
+          "id": "product_tile_show_title",
+          "label": "Show product title",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "product_tile_show_price",
+          "label": "Show product price",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "product_tile_show_compare_at_price",
+          "label": "Show old price",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "product_tile_show_vendor",
+          "label": "Show vendor",
+          "default": false
+        },
+        {
+          "type": "color",
+          "id": "product_tile_price_color",
+          "label": "New price color",
+          "default": "#4A4A4A"
+        },
+        {
+          "type": "color",
+          "id": "product_tile_compare_price_color",
+          "label": "Old price color",
+          "default": "#7A7A7A"
+        },
+        {
+          "type": "header",
+          "content": "Sale badge"
+        },
+        {
+          "type": "checkbox",
+          "id": "product_tile_show_sale_badge",
+          "label": "Show discount badge",
+          "default": true
+        },
+        {
+          "type": "select",
+          "id": "product_tile_sale_badge_position",
+          "label": "Badge position",
+          "options": [
+            {
+              "value": "top-left",
+              "label": "Top left"
+            },
+            {
+              "value": "top-right",
+              "label": "Top right"
+            },
+            {
+              "value": "bottom-left",
+              "label": "Bottom left"
+            },
+            {
+              "value": "bottom-right",
+              "label": "Bottom right"
+            }
+          ],
+          "default": "top-left"
+        },
+        {
+          "type": "color",
+          "id": "product_tile_sale_badge_background",
+          "label": "Badge background",
+          "default": "#111111"
+        },
+        {
+          "type": "color",
+          "id": "product_tile_sale_badge_text_color",
+          "label": "Badge text color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "product_tile_sale_badge_font_size",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Badge font size",
+          "default": 13
+        },
+        {
+          "type": "range",
+          "id": "product_tile_sale_badge_corner_radius",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Badge corner radius",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "product_tile_sale_badge_offset_x",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "label": "Horizontal offset",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "product_tile_sale_badge_offset_y",
+          "min": 0,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "label": "Vertical offset",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "product_tile_sale_badge_padding_x",
+          "min": 6,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Horizontal padding",
+          "default": 10
+        },
+        {
+          "type": "range",
+          "id": "product_tile_sale_badge_padding_y",
+          "min": 4,
+          "max": 18,
+          "step": 1,
+          "unit": "px",
+          "label": "Vertical padding",
+          "default": 6
+        },
+        {
+          "type": "header",
+          "content": "Media"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_quick_shop",
+          "label": "Enable quick shop feature",
+          "default": false
+      },
+      {
+        "type": "text",
+        "id": "quick_shop_button_text",
+        "label": "Quick shop button text",
+        "default": "Quick view"
+      },
+      {
+        "type": "select",
+        "id": "product_tile_image_size",
+        "label": "Force image size",
+        "options": [
+          {
+            "value": "natural",
+            "label": "Natural"
+          },
+          {
+            "value": "square",
+            "label": "Square (1:1)"
+          },
+          {
+            "value": "portrait",
+            "label": "Portrait (4:5)"
+          },
+          {
+            "value": "landscape",
+            "label": "Landscape (4:3)"
+          }
+        ],
+        "default": "square"
+      },
+      {
+        "type": "checkbox",
+        "id": "product_tile_zoom_image",
+        "label": "Zoom image to fill space",
+        "default": false
+      },
+      {
+        "type": "paragraph",
+        "content": "No effect when grid image size set to 'Natural'."
+      },
+        {
+          "type": "checkbox",
+          "id": "product_tile_show_second_image",
+          "label": "Hover to reveal second image",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Color swatches"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_color_swatches",
+        "label": "Enable color swatches",
+        "default": false
+      },
+      {
+        "type": "radio",
+        "id": "product_tile_swatch_style",
+        "label": "Swatch style",
+        "options": [
+          {
+            "value": "round",
+            "label": "Round"
+          },
+          {
+            "value": "square",
+            "label": "Square"
+          }
+        ],
+        "default": "round"
+      },
+      {
+        "type": "textarea",
+        "id": "color_swatch_mappings",
+        "label": "Color swatch mappings",
+        "info": "One per line, for example: Black: #111111",
+        "default": "Black: #111111\nWhite: #F5F5F5\nCream: #F3E7D3\nBeige: #D8C3A5\nNavy: #1F2A44"
+      }
+    ]
+  },
+  {
+    "name": "Collection tiles",
+    "settings": [
+      {
+        "type": "select",
+        "id": "collection_tile_style",
+        "label": "Style",
+        "options": [
+          {
+            "value": "overlay",
+            "label": "Text on image overlay"
+          },
+          {
+            "value": "overlay_bg",
+            "label": "Text on image with bg"
+          },
+          {
+            "value": "below",
+            "label": "Text below image"
+          }
+        ],
+        "default": "below"
+      },
+      {
+        "type": "paragraph",
+        "content": "Text on image overlay uses a subtle bottom fade for contrast. Text on image with bg places the title inside a small background label over the image."
+      },
+      {
+        "type": "select",
+        "id": "collection_tile_shape",
+        "label": "Shape",
+        "options": [
+          {
+            "value": "square",
+            "label": "Square"
+          },
+          {
+            "value": "landscape",
+            "label": "Landscape"
+          },
+          {
+            "value": "portrait",
+            "label": "Portrait"
+          }
+        ],
+        "default": "square"
+      },
+      {
+        "type": "select",
+        "id": "collection_tile_image_source",
+        "label": "Image",
+        "options": [
+          {
+            "value": "first_product",
+            "label": "First product"
+          },
+          {
+            "value": "collection_image",
+            "label": "Collection image"
+          }
+        ],
+        "default": "collection_image"
+      },
+      {
+        "type": "select",
+        "id": "collection_tile_text_alignment",
+        "label": "Text alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "paragraph",
+        "content": "Text alignment applies to all collection tile styles. For text on image with bg, it also controls whether the label sits left, center, or right on the image."
+      },
+      {
+        "type": "header",
+        "content": "Text on image with bg only"
+      },
+      {
+        "type": "paragraph",
+        "content": "The settings below only apply when Style is set to Text on image with bg."
+      },
+      {
+        "type": "color",
+        "id": "collection_tile_text_color",
+        "label": "Text color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "collection_tile_text_background",
+        "label": "Text BG",
+        "default": "#111111"
+      },
+      {
+        "type": "range",
+        "id": "collection_tile_tint_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Tint opacity",
+        "default": 35
+      },
+      {
+        "type": "color",
+        "id": "collection_tile_tint_color",
+        "label": "Tint color",
+        "default": "#111111"
+      }
+    ]
+  },
+  {
+    "name": "Cart drawer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Display"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_drawer_show_compare_at",
+        "label": "Show compare-at prices in cart drawer",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "cart_drawer_image_fit",
+        "label": "Product image fit",
+        "default": "contain",
+        "options": [
+          {
+            "value": "contain",
+            "label": "Contain"
+          },
+          {
+            "value": "cover",
+            "label": "Cover"
+          }
+        ]
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_heading_color",
+        "label": "Heading color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_eyebrow_color",
+        "label": "Eyebrow color",
+        "default": "#6b7280"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_item_title_color",
+        "label": "Item title color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_variant_color",
+        "label": "Variant text color",
+        "default": "#6b7280"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_price_color",
+        "label": "Price color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_compare_price_color",
+        "label": "Compare-at price color",
+        "default": "#8b8b8b"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_subtotal_label_color",
+        "label": "Subtotal label color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_subtotal_price_color",
+        "label": "Subtotal price color",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_compare_subtotal_color",
+        "label": "Compare-at subtotal color",
+        "default": "#8b8b8b"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_remove_color",
+        "label": "Remove link color",
+        "default": "#6b7280"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_badge_text_color",
+        "label": "Cart badge text color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "cart_drawer_badge_background_color",
+        "label": "Cart badge background color",
+        "default": "#111111"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_drawer_show_secure_icon",
+        "label": "Show secure icon on checkout button",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "cart_drawer_secure_icon_position",
+        "label": "Secure icon position",
+        "default": "before",
+        "options": [
+          {
+            "value": "before",
+            "label": "Before text"
+          },
+          {
+            "value": "after",
+            "label": "After text"
+          }
+        ]
+      }
+    ]
+  }
+]

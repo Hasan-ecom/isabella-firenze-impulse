@@ -1,0 +1,58 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "type_primary_font": "montserrat_n4",
+    "type_heading_font": "outfit_n4",
+    "max_page_width": 1440,
+    "min_page_margin": 10,
+    "theme_corner_radius": 0,
+    "product_tile_corner_radius": 0,
+    "button_corner_radius": 0,
+    "button_primary_background": "#000000",
+    "button_primary_text": "#FFFFFF",
+    "button_primary_border": "#000000",
+    "button_primary_background_hover": "#FFFFFF",
+    "button_primary_text_hover": "#000000",
+    "button_primary_border_hover": "#000000",
+    "product_tile_price_color": "#000000",
+    "product_tile_compare_price_color": "#777777",
+    "product_tile_sale_badge_position": "top-right",
+    "product_tile_sale_badge_background": "#000000",
+    "product_tile_sale_badge_text_color": "#FFFFFF",
+    "product_tile_sale_badge_font_size": 11,
+    "product_tile_image_size": "portrait",
+    "product_tile_zoom_image": true,
+    "collection_tile_style": "overlay_bg",
+    "collection_tile_text_alignment": "center",
+    "collection_tile_text_color": "#000000",
+    "collection_tile_text_background": "#ffffff",
+    "collection_tile_tint_opacity": 5,
+    "cart_drawer_badge_background_color": "#000000",
+    "cart_free_shipping_enabled": true,
+    "cart_drawer_upgrade_enabled": true,
+    "cart_drawer_countdown_enabled": true,
+    "content_for_index": [],
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#ffffff",
+          "text": "#000000"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#000000",
+          "text": "#ffffff"
+        }
+      }
+    }
+  }
+}
