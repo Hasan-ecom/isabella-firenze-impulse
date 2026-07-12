@@ -1,0 +1,95 @@
+<div class="customer-page customer-register">
+  <div class="customer-page__inner">
+    <h1 class="customer-page__heading">{{ 'customer.register.title' | t | default: 'Create account' }}</h1>
+
+    {%- form 'create_customer' -%}
+      {%- if form.errors -%}
+        <div class="customer-page__errors" role="alert">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="RegisterFirstName">
+          {{ 'customer.register.first_name' | t | default: 'First name' }}
+        </label>
+        <input
+          class="customer-page__input"
+          type="text"
+          id="RegisterFirstName"
+          name="customer[first_name]"
+          value="{{ form.first_name }}"
+          autocomplete="given-name"
+        >
+      </div>
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="RegisterLastName">
+          {{ 'customer.register.last_name' | t | default: 'Last name' }}
+        </label>
+        <input
+          class="customer-page__input"
+          type="text"
+          id="RegisterLastName"
+          name="customer[last_name]"
+          value="{{ form.last_name }}"
+          autocomplete="family-name"
+        >
+      </div>
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="RegisterEmail">
+          {{ 'customer.register.email' | t | default: 'Email' }}
+          <span aria-hidden="true">*</span>
+          <span class="visually-hidden">{{ 'customer.register.required' | t | default: '(required)' }}</span>
+        </label>
+        <input
+          class="customer-page__input"
+          type="email"
+          id="RegisterEmail"
+          name="customer[email]"
+          value="{{ form.email }}"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          aria-required="true"
+          required
+        >
+      </div>
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="RegisterPassword">
+          {{ 'customer.register.password' | t | default: 'Password' }}
+          <span aria-hidden="true">*</span>
+          <span class="visually-hidden">{{ 'customer.register.required' | t | default: '(required)' }}</span>
+        </label>
+        <input
+          class="customer-page__input"
+          type="password"
+          id="RegisterPassword"
+          name="customer[password]"
+          autocomplete="new-password"
+          aria-required="true"
+          required
+        >
+      </div>
+
+      <button type="submit" class="button button--primary customer-page__submit">
+        {{ 'customer.register.submit' | t | default: 'Create account' }}
+      </button>
+    {%- endform -%}
+
+    <div class="customer-page__alt">
+      <p>{{ 'customer.register.have_account' | t | default: 'Already have an account?' }}</p>
+      <a href="{{ routes.account_login_url }}" class="button button--secondary">
+        {{ 'customer.register.sign_in' | t | default: 'Sign in' }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .customer-register .customer-page__inner {
+    max-width: 480px;
+  }
+</style>

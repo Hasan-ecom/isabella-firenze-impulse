@@ -1,0 +1,244 @@
+<div class="customer-page customer-login">
+  <div class="customer-page__inner">
+    <h1 class="customer-page__heading">{{ 'customer.login.title' | t | default: 'Sign in' }}</h1>
+
+    {%- form 'customer_login' -%}
+      {%- if form.errors -%}
+        <div class="customer-page__errors" role="alert">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="CustomerEmail">
+          {{ 'customer.login.email' | t | default: 'Email' }}
+        </label>
+        <input
+          class="customer-page__input"
+          type="email"
+          id="CustomerEmail"
+          name="customer[email]"
+          value="{{ form.email }}"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          aria-required="true"
+          required
+        >
+      </div>
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="CustomerPassword">
+          {{ 'customer.login.password' | t | default: 'Password' }}
+        </label>
+        <input
+          class="customer-page__input"
+          type="password"
+          id="CustomerPassword"
+          name="customer[password]"
+          autocomplete="current-password"
+          aria-required="true"
+          required
+        >
+      </div>
+
+      <p>
+        <a href="#recover" class="customer-page__link" id="ForgotPasswordLink">
+          {{ 'customer.login.forgot_password' | t | default: 'Forgot your password?' }}
+        </a>
+      </p>
+
+      <button type="submit" class="button button--primary customer-page__submit">
+        {{ 'customer.login.sign_in' | t | default: 'Sign in' }}
+      </button>
+    {%- endform -%}
+
+    <div class="customer-page__alt">
+      <p>{{ 'customer.login.no_account' | t | default: "Don't have an account?" }}</p>
+      <a href="{{ routes.account_register_url }}" class="button button--secondary">
+        {{ 'customer.login.create_account' | t | default: 'Create account' }}
+      </a>
+    </div>
+
+    <div class="customer-page__recover" id="RecoverPasswordForm" hidden>
+      <h2 class="customer-page__subheading">{{ 'customer.recover_password.title' | t | default: 'Reset your password' }}</h2>
+      <p>{{ 'customer.recover_password.subtext' | t | default: "We'll send you an email to reset your password." }}</p>
+
+      {%- form 'recover_customer_password' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="customer-page__success" role="status">
+            {{ 'customer.recover_password.success' | t | default: 'If an account exists for this email, a reset link has been sent.' }}
+          </p>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="customer-page__errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="customer-page__field">
+          <label class="customer-page__label" for="RecoverEmail">
+            {{ 'customer.login.email' | t | default: 'Email' }}
+          </label>
+          <input
+            class="customer-page__input"
+            type="email"
+            id="RecoverEmail"
+            name="email"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            aria-required="true"
+            required
+          >
+        </div>
+
+        <div class="customer-page__recover-actions">
+          <button type="submit" class="button button--primary">
+            {{ 'customer.recover_password.submit' | t | default: 'Submit' }}
+          </button>
+          <a href="#login" class="customer-page__link" id="HideRecoverPasswordLink">
+            {{ 'customer.recover_password.cancel' | t | default: 'Cancel' }}
+          </a>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var forgotLink = document.getElementById('ForgotPasswordLink');
+    var hideLink = document.getElementById('HideRecoverPasswordLink');
+    var loginForm = document.querySelector('.customer-login form');
+    var recoverForm = document.getElementById('RecoverPasswordForm');
+
+    if (!forgotLink || !recoverForm) return;
+
+    function showRecover() {
+      if (loginForm) loginForm.hidden = true;
+      recoverForm.hidden = false;
+    }
+
+    function showLogin() {
+      if (loginForm) loginForm.hidden = false;
+      recoverForm.hidden = true;
+    }
+
+    forgotLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      showRecover();
+    });
+
+    if (hideLink) {
+      hideLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        showLogin();
+      });
+    }
+
+    if (window.location.hash === '#recover') showRecover();
+  })();
+</script>
+
+<style>
+  .customer-page {
+    padding-block: 60px 80px;
+  }
+
+  .customer-page__inner {
+    width: min(100% - var(--page-margin, 20px) * 2, 480px);
+    margin-inline: auto;
+    display: grid;
+    gap: 20px;
+  }
+
+  .customer-page__heading {
+    margin: 0 0 8px;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .customer-page__subheading {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .customer-page__field {
+    display: grid;
+    gap: 6px;
+  }
+
+  .customer-page__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .customer-page__input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #333) 25%, transparent);
+    border-radius: var(--style-border-radius-theme, 4px);
+    background: var(--color-background, #fff);
+    color: var(--color-foreground, #333);
+    font-size: 1rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+  }
+
+  .customer-page__input:focus {
+    outline: none;
+    border-color: var(--color-foreground, #333);
+  }
+
+  .customer-page__submit {
+    width: 100%;
+  }
+
+  .customer-page__alt {
+    text-align: center;
+    display: grid;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid color-mix(in srgb, var(--color-foreground, #333) 12%, transparent);
+  }
+
+  .customer-page__link {
+    color: var(--color-foreground, #333);
+    font-size: 0.875rem;
+  }
+
+  .customer-page__recover {
+    display: grid;
+    gap: 16px;
+  }
+
+  .customer-page__recover-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .customer-page__errors {
+    padding: 12px 16px;
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: var(--style-border-radius-theme, 4px);
+    color: #b91c1c;
+    font-size: 0.875rem;
+  }
+
+  .customer-page__success {
+    padding: 12px 16px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: var(--style-border-radius-theme, 4px);
+    color: #15803d;
+    font-size: 0.875rem;
+  }
+</style>

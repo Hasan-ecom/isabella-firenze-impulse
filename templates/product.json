@@ -1,0 +1,423 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "review_summary_9JayEf": {
+          "type": "review_summary",
+          "settings": {
+            "stars_text": "★★★★★",
+            "stars_color": "#e4b529",
+            "stars_size": 20,
+            "stars_spacing": 0,
+            "text": "4.7/5 | Based on 5000+ Reviews",
+            "link": "",
+            "text_size": 13,
+            "text_color": "#000000"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+            "title_size_desktop": 36,
+            "title_size_mobile": 22
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "price_color": "#429e4b",
+            "compare_price_color": "#d60000",
+            "price_size": 26,
+            "compare_price_size": 16,
+            "compare_price_position": "before",
+            "show_savings_badge": true,
+            "savings_badge_format": "percent",
+            "savings_badge_background": "#ffffff",
+            "savings_badge_text": "#d60000"
+          }
+        },
+        "low_stock_notice_qJTwj9": {
+          "type": "low_stock_notice",
+          "settings": {
+            "text": "Low in stock, only a few left",
+            "text_size": 17,
+            "text_color": "#c20704",
+            "dot_color": "#c20704",
+            "dot_size": 10,
+            "pulse_size": 26
+          }
+        },
+        "sales_points_Y9wtkJ": {
+          "type": "sales_points",
+          "settings": {
+            "text_color": "#111111",
+            "icon_size": 24,
+            "icon_1_url": "",
+            "text_1": "Free Shipping with UPS",
+            "icon_2_url": "",
+            "text_2": "30-Day Money-Back Guarantee",
+            "icon_3_url": "",
+            "text_3": "",
+            "placement": "info"
+          }
+        },
+        "variants": {
+          "type": "variant_picker",
+          "settings": {
+            "color_display": "variant_image",
+            "color_trigger_words": "color, colour, couleur",
+            "show_color_labels": false,
+            "swatch_size": 56,
+            "variant_button_size": "small",
+            "variant_button_font_size": 15
+          }
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "disabled": true,
+          "settings": {}
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {
+            "sticky_label": ""
+          }
+        },
+        "shipping_estimate_fxC6J7": {
+          "type": "shipping_estimate",
+          "settings": {
+            "language": "en",
+            "show_free_shipping": true,
+            "flag": "auto",
+            "background": "#f6f6f6",
+            "text_color": "#222222",
+            "dot_color": "#222222",
+            "font_size": 15,
+            "border_radius": 6
+          }
+        },
+        "payment_methods_qyVNYa": {
+          "type": "payment_methods",
+          "settings": {
+            "heading": "Free UPS Shipping & 30-Day Money Back Guarantee",
+            "icon_width": 38,
+            "icon_height": 24,
+            "gap": 8,
+            "badge_background": "#ffffff",
+            "badge_border": "#d9dce1",
+            "badge_text": "#111111",
+            "show_amex": true,
+            "show_mastercard": true,
+            "show_visa": true,
+            "show_maestro": false,
+            "show_paypal": true,
+            "show_klarna": false,
+            "show_shop_pay": true,
+            "show_apple_pay": true,
+            "show_google_pay": true,
+            "show_blik": false,
+            "show_ideal": false,
+            "show_mobilepay": false,
+            "show_union_pay": false,
+            "show_bancontact": false
+          }
+        },
+        "sale_announcement_2_jGFdHW": {
+          "type": "sale_announcement_2",
+          "settings": {
+            "prefix": "UPDATE:",
+            "body": "Due to high demand during our Anniversary Sale, only a few units are left in stock!",
+            "background": "#feecea",
+            "text_color": "#b60000",
+            "border_radius": 10,
+            "text_size": 16
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "display_style": "open",
+            "accordion_heading": "",
+            "accordion_open_by_default": false
+          }
+        },
+        "accordion": {
+          "type": "accordion",
+          "settings": {
+            "heading": "FREE SHIPPING",
+            "content": "<p>At [STORE]<strong>, </strong>customer satisfaction comes first. That's why we keep you constantly updated on your order and always offer <strong>free shipping. </strong>We use the reliable delivery services of <strong>UPS.</strong></p>",
+            "open_by_default": false
+          }
+        },
+        "accordion_GiGtrF": {
+          "type": "accordion",
+          "settings": {
+            "heading": "MONEY-BACK GUARANTEE",
+            "content": "<p>Doesn't fit? No problem! You can exchange or return it within 30 days, but please note that some exemptions apply. To understand better, read <a href=\"/policies/refund-policy\" title=\"Refund Policy\">here</a>.</p>",
+            "open_by_default": false
+          }
+        },
+        "accordion_Pr3fTf": {
+          "type": "accordion",
+          "settings": {
+            "heading": "SECURE PAYMENT",
+            "content": "<p>At [STORE] Boutique your peace of mind comes first. That's why we offer 100% secure payments by credit card. Buy with total confidence.</p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "review_summary_9JayEf",
+        "title",
+        "price",
+        "low_stock_notice_qJTwj9",
+        "sales_points_Y9wtkJ",
+        "variants",
+        "quantity",
+        "buy",
+        "shipping_estimate_fxC6J7",
+        "payment_methods_qyVNYa",
+        "sale_announcement_2_jGFdHW",
+        "description",
+        "accordion",
+        "accordion_GiGtrF",
+        "accordion_Pr3fTf"
+      ],
+      "settings": {
+        "gallery_layout": "carousel_bottom_thumbnails",
+        "mobile_gallery_mode": "floating_dots",
+        "gallery_media_fit": "cover",
+        "show_zoom_button": true,
+        "zoom_button_style": "icon",
+        "zoom_button_position": "bottom_right",
+        "desktop_info_width": 48,
+        "enable_sticky_info": true,
+        "enable_sticky_bar": true,
+        "show_related_products": true,
+        "related_heading": "",
+        "related_count": 4
+      }
+    },
+    "featured_collection_j9Vw3e": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "heading_font_scale": 100,
+        "body_font_scale": 100,
+        "color_scheme": "",
+        "heading": "COMBINE AND GET 10% OFF!",
+        "collection": "all-products-dnd",
+        "products_per_row": 3,
+        "rows": 3,
+        "enable_swipe_on_mobile": true,
+        "show_view_all": true,
+        "view_all_position": "header",
+        "view_all_style": "link",
+        "show_section_divider": false
+      }
+    },
+    "testimonials_slider_temp_VetadU": {
+      "type": "testimonials-slider",
+      "blocks": {
+        "slide_YVQgAC": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>Fast shipping, sweaters keep you warm and are good quality.</p>",
+            "author": "<p>— <em>Karen S., Chicago, IL</em></p>"
+          }
+        },
+        "slide_qAYFCA": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>Great quality and fast delivery. The Birthday Sale made it even better!</p>",
+            "author": "<p>— <em>Linda M., Dallas, TX</em></p>"
+          }
+        },
+        "slide_QrMyYQ": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>Great customer service! Wanted to change the color of my sweater and it was no problem!</p>",
+            "author": "<p>— <em>Donna W., New York, NY</em></p>"
+          }
+        },
+        "slide_8jA6dg": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>Light sandals, no blisters, and they look great with casual outfits. Exactly what I needed.</p>",
+            "author": "<p>— <em>Mary P., Seattle, WA</em></p>"
+          }
+        },
+        "slide_GCYYCM": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>Great service! Easy exchange after the heels turned out too small.</p>",
+            "author": "<p>— <em>Patricia R., Phoenix, AZ</em></p>"
+          }
+        },
+        "slide_aQRy8t": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>Bought some heels, comfortable and elegant. I wore them all day at a wedding without any pain.</p>",
+            "author": "<p>— <em>Deborah L., Miami, FL</em></p>"
+          }
+        },
+        "slide_kEzqLF": {
+          "type": "slide",
+          "settings": {
+            "media_style": "image",
+            "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+            "controls": false,
+            "stars_count": 5,
+            "text": "<p>My order arrived quickly and well packaged. The shoes are comfortable and stylish—exactly what I was looking for.</p>",
+            "author": "<p>— <em>Susan T., Boston, MA</em></p>"
+          }
+        }
+      },
+      "block_order": [
+        "slide_YVQgAC",
+        "slide_qAYFCA",
+        "slide_QrMyYQ",
+        "slide_8jA6dg",
+        "slide_GCYYCM",
+        "slide_aQRy8t",
+        "slide_kEzqLF"
+      ],
+      "name": "Testimonials Custom",
+      "settings": {
+        "heading": "<h2>See What Customers Are Saying About Their Birthday Sale Deals</h2>",
+        "heading_size": 30,
+        "sub_heading": "",
+        "slider_view": 5,
+        "slider_view_mobile": 1.3,
+        "slider_gap": 28,
+        "slider_gap_mobile": 20,
+        "autoplay": false,
+        "card_bg_color": "#ffffff",
+        "card_border_color": "#dedbc4",
+        "card_radius": 20,
+        "card_shadow": false,
+        "media_ratio": "square",
+        "stars_color": "#323232",
+        "text_size": 16,
+        "text_color": "#323232",
+        "author_color": "#323232",
+        "arrow_show_desktop": true,
+        "arrow_show_mobile": false,
+        "dots_show_desktop": false,
+        "dots_show_mobile": true,
+        "color_scheme": "",
+        "full_width": true
+      }
+    },
+    "image_with_text_tNGdnV": {
+      "type": "image-with-text",
+      "custom_css": [],
+      "name": "Image with text",
+      "settings": {
+        "heading_font_scale": 100,
+        "body_font_scale": 100,
+        "color_scheme": "",
+        "subheading": "",
+        "heading": "Celebrating 5 Years Of Comfort And Style",
+        "text": "<p>Five years ago, I started not just one, but two amazing journeys: the birth of my daughter [STORE] and the opening of my very own store. Since then, we’ve grown together – [STORE] into a bright, joyful little girl, and the shop into a place full of wonderful finds and amazing customers.</p><p>Now that [STORE] is turning 5, I want to celebrate this double milestone in a big way. 🎉 That’s why I’m having an <strong>extra BIG 5th Birthday Sale</strong> at the store! Because birthdays are all about sharing the joy.</p><p>Come by, join the celebration, and let’s raise a toast to 5 years of love, growth, and community.</p><p><strong>With Love,<br/>[STORE] </strong>❤️</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "primary",
+        "text_alignment": "center",
+        "image_size": "50",
+        "layout": "left",
+        "show_section_divider": false,
+        "lazy_load_images": true,
+        "primary_image_height": 460,
+        "secondary_image_height": 280
+      }
+    },
+    "trust_points_kHLE7L": {
+      "type": "trust-points",
+      "blocks": {
+        "point_tJGJa8": {
+          "type": "point",
+          "settings": {
+            "icon": "shipping",
+            "icon_size": 30,
+            "title": "Free Shipping",
+            "text": "<p>We offer free shipping for maximum customer comfort. Your satisfaction is important to us, which is why we offer smooth and free delivery.</p>"
+          }
+        },
+        "point_jRWhGf": {
+          "type": "point",
+          "settings": {
+            "icon": "return",
+            "icon_size": 30,
+            "title": "30-Day Return Guarantee",
+            "text": "<p>Your satisfaction is our focus. Our 30-day return policy guarantees you maximum flexibility and the best shopping experience.</p>"
+          }
+        },
+        "point_MB7N8D": {
+          "type": "point",
+          "settings": {
+            "icon": "secure",
+            "icon_size": 30,
+            "title": "100% Secure Payment",
+            "text": "<p>We offer a variety of secure payment options. Pay easily and enjoy a safe shopping experience.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "point_tJGJa8",
+        "point_jRWhGf",
+        "point_MB7N8D"
+      ],
+      "name": "Trust points",
+      "settings": {
+        "heading_font_scale": 100,
+        "body_font_scale": 100,
+        "color_scheme": "",
+        "subheading": "",
+        "heading": "",
+        "show_section_divider": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "featured_collection_j9Vw3e",
+    "testimonials_slider_temp_VetadU",
+    "image_with_text_tNGdnV",
+    "trust_points_kHLE7L"
+  ]
+}

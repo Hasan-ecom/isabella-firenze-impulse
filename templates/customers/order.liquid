@@ -1,0 +1,444 @@
+<div class="customer-page customer-order">
+  <div class="customer-page__inner customer-order__inner">
+    <div class="customer-order__header">
+      <div>
+        <h1 class="customer-page__heading">{{ 'customer.order.title' | t: name: order.name | default: order.name }}</h1>
+        <p class="customer-order__date">{{ 'customer.order.date' | t: date: order.created_at | date: format: 'date' | default: order.created_at | date: format: 'date' }}</p>
+      </div>
+      <a href="{{ routes.account_url }}" class="customer-page__link">
+        &larr; {{ 'customer.account.return' | t | default: 'Back to account' }}
+      </a>
+    </div>
+
+    <div class="customer-order__grid">
+      <div class="customer-order__main">
+        <div class="customer-order__section">
+          <h2 class="customer-page__subheading">{{ 'customer.order.items' | t | default: 'Items' }}</h2>
+
+          <table class="customer-order__table">
+            <thead>
+              <tr>
+                <th class="customer-order__th" colspan="2">{{ 'customer.order.product' | t | default: 'Product' }}</th>
+                <th class="customer-order__th customer-order__th--center">{{ 'customer.order.quantity' | t | default: 'Qty' }}</th>
+                <th class="customer-order__th customer-order__th--right">{{ 'customer.order.price' | t | default: 'Price' }}</th>
+                <th class="customer-order__th customer-order__th--right">{{ 'customer.order.total' | t | default: 'Total' }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for line_item in order.line_items %}
+                <tr class="customer-order__row">
+                  <td class="customer-order__td customer-order__td--image">
+                    {% if line_item.image %}
+                      <img
+                        class="customer-order__item-image"
+                        src="{{ line_item.image | image_url: width: 80 }}"
+                        alt="{{ line_item.image.alt | escape }}"
+                        width="80"
+                        height="80"
+                        loading="lazy"
+                      >
+                    {% else %}
+                      <div class="customer-order__item-placeholder"></div>
+                    {% endif %}
+                  </td>
+
+                  <td class="customer-order__td">
+                    <p class="customer-order__item-title">{{ line_item.title }}</p>
+
+                    {% unless line_item.variant.title == 'Default Title' %}
+                      <p class="customer-order__item-variant">{{ line_item.variant.title }}</p>
+                    {% endunless %}
+
+                    {%- if line_item.selling_plan_allocation -%}
+                      <p class="customer-order__item-selling-plan">
+                        {{ line_item.selling_plan_allocation.selling_plan.name }}
+                      </p>
+                    {%- endif -%}
+
+                    {%- if line_item.unit_price_measurement -%}
+                      <p class="customer-order__item-unit-price">
+                        {{ line_item.unit_price | money_with_currency }}
+                        /
+                        {%- if line_item.unit_price_measurement.reference_value != 1 -%}
+                          {{ line_item.unit_price_measurement.reference_value }}
+                        {%- endif -%}
+                        {{ line_item.unit_price_measurement.reference_unit }}
+                      </p>
+                    {%- endif -%}
+
+                    {% if line_item.fulfillment %}
+                      <p class="customer-order__item-fulfillment">
+                        {{ 'customer.order.fulfilled_at' | t: date: line_item.fulfillment.created_at | date: format: 'date' | default: 'Fulfilled' }}
+                        {% if line_item.fulfillment.tracking_url %}
+                          &mdash;
+                          <a href="{{ line_item.fulfillment.tracking_url }}" class="customer-page__link" target="_blank" rel="noopener">
+                            {{ 'customer.order.track_shipment' | t | default: 'Track shipment' }}
+                          </a>
+                        {% endif %}
+                      </p>
+                    {% endif %}
+
+                    {% if line_item.line_level_discount_allocations.size > 0 %}
+                      <ul class="customer-order__discounts">
+                        {% for discount_allocation in line_item.line_level_discount_allocations %}
+                          <li class="customer-order__discount">
+                            {{ discount_allocation.discount_application.title }}
+                            (-{{ discount_allocation.amount | money_with_currency }})
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </td>
+
+                  <td class="customer-order__td customer-order__td--center">{{ line_item.quantity }}</td>
+
+                  <td class="customer-order__td customer-order__td--right">
+                    {% if line_item.original_price != line_item.final_price %}
+                      <s class="customer-order__original-price">{{ line_item.original_price | money_with_currency }}</s>
+                      <span class="customer-order__sale-price">{{ line_item.final_price | money_with_currency }}</span>
+                    {% else %}
+                      {{ line_item.original_price | money_with_currency }}
+                    {% endif %}
+                  </td>
+
+                  <td class="customer-order__td customer-order__td--right">{{ line_item.final_line_price | money_with_currency }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="customer-order__totals">
+          <table class="customer-order__totals-table">
+            <tr>
+              <td class="customer-order__totals-label">{{ 'customer.order.subtotal' | t | default: 'Subtotal' }}</td>
+              <td class="customer-order__totals-value">{{ order.line_items_subtotal_price | money_with_currency }}</td>
+            </tr>
+
+            {% for discount_application in order.cart_level_discount_applications %}
+              <tr class="customer-order__totals-discount">
+                <td class="customer-order__totals-label">
+                  {{ 'cart.general.discount' | t | default: 'Discount' }}
+                  <span class="customer-order__discount-name">({{ discount_application.title }})</span>
+                </td>
+                <td class="customer-order__totals-value">-{{ discount_application.total_allocated_amount | money_with_currency }}</td>
+              </tr>
+            {% endfor %}
+
+            {% for shipping_method in order.shipping_methods %}
+              <tr>
+                <td class="customer-order__totals-label">{{ 'customer.order.shipping' | t | default: 'Shipping' }} ({{ shipping_method.title }})</td>
+                <td class="customer-order__totals-value">{{ shipping_method.price | money_with_currency }}</td>
+              </tr>
+            {% endfor %}
+
+            {% for tax_line in order.tax_lines %}
+              <tr>
+                <td class="customer-order__totals-label">{{ 'customer.order.tax' | t | default: 'Tax' }} ({{ tax_line.title }} {{ tax_line.rate | times: 100 }}%)</td>
+                <td class="customer-order__totals-value">{{ tax_line.price | money_with_currency }}</td>
+              </tr>
+            {% endfor %}
+
+            <tr class="customer-order__totals-final">
+              <td class="customer-order__totals-label">{{ 'customer.order.total' | t | default: 'Total' }}</td>
+              <td class="customer-order__totals-value">{{ order.total_price | money_with_currency }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="customer-order__aside">
+        <div class="customer-order__section">
+          <h2 class="customer-page__subheading">{{ 'customer.order.billing_address' | t | default: 'Billing address' }}</h2>
+          <p class="customer-order__status-label">
+            {{ 'customer.order.payment_status' | t | default: 'Payment status' }}:
+            <span class="customer-account__status-badge customer-account__status-badge--{{ order.financial_status }}">
+              {{ order.financial_status_label }}
+            </span>
+          </p>
+          <address class="customer-order__address">
+            {{ order.billing_address | format_address }}
+          </address>
+        </div>
+
+        <div class="customer-order__section">
+          <h2 class="customer-page__subheading">{{ 'customer.order.shipping_address' | t | default: 'Shipping address' }}</h2>
+          <p class="customer-order__status-label">
+            {{ 'customer.order.fulfillment_status' | t | default: 'Fulfillment status' }}:
+            <span class="customer-account__status-badge customer-account__status-badge--{{ order.fulfillment_status }}">
+              {{ order.fulfillment_status_label | default: ('customer.orders.unfulfilled' | t | default: 'Unfulfilled') }}
+            </span>
+          </p>
+          {% if order.shipping_address %}
+            <address class="customer-order__address">
+              {{ order.shipping_address | format_address }}
+            </address>
+          {% else %}
+            <p class="customer-order__no-shipping">{{ 'customer.order.no_shipping_address' | t | default: 'No shipping address for this order.' }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .customer-order__inner {
+    max-width: 1000px !important;
+  }
+
+  .customer-order__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .customer-order__date {
+    margin: 4px 0 0;
+    color: color-mix(in srgb, var(--color-foreground, #333) 60%, transparent);
+    font-size: 0.9rem;
+  }
+
+  .customer-order__grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 720px) {
+    .customer-order__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .customer-order__section {
+    display: grid;
+    gap: 16px;
+  }
+
+  .customer-order__main {
+    display: grid;
+    gap: 32px;
+  }
+
+  .customer-order__aside {
+    display: grid;
+    gap: 32px;
+  }
+
+  .customer-order__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .customer-order__th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: color-mix(in srgb, var(--color-foreground, #333) 60%, transparent);
+    border-bottom: 2px solid color-mix(in srgb, var(--color-foreground, #333) 12%, transparent);
+    white-space: nowrap;
+  }
+
+  .customer-order__th--center { text-align: center; }
+  .customer-order__th--right { text-align: right; }
+
+  .customer-order__row:not(:last-child) .customer-order__td {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground, #333) 8%, transparent);
+  }
+
+  .customer-order__td {
+    padding: 16px 12px;
+    vertical-align: top;
+  }
+
+  .customer-order__td--image {
+    width: 88px;
+    padding-right: 0;
+  }
+
+  .customer-order__td--center { text-align: center; }
+  .customer-order__td--right { text-align: right; white-space: nowrap; }
+
+  .customer-order__item-image {
+    display: block;
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: calc(var(--style-border-radius-theme, 4px) * 0.75);
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #333) 10%, transparent);
+  }
+
+  .customer-order__item-placeholder {
+    width: 72px;
+    height: 72px;
+    background: color-mix(in srgb, var(--color-foreground, #333) 6%, transparent);
+    border-radius: calc(var(--style-border-radius-theme, 4px) * 0.75);
+  }
+
+  .customer-order__item-title {
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  .customer-order__item-variant {
+    margin: 0 0 4px;
+    color: color-mix(in srgb, var(--color-foreground, #333) 65%, transparent);
+    font-size: 0.875rem;
+  }
+
+  .customer-order__item-selling-plan {
+    margin: 0 0 4px;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--color-foreground, #333) 65%, transparent);
+    font-style: italic;
+  }
+
+  .customer-order__item-unit-price {
+    margin: 0 0 4px;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--color-foreground, #333) 55%, transparent);
+  }
+
+  .customer-order__item-fulfillment {
+    margin: 6px 0 0;
+    font-size: 0.8rem;
+    color: color-mix(in srgb, var(--color-foreground, #333) 60%, transparent);
+  }
+
+  .customer-order__discounts {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+  }
+
+  .customer-order__discount {
+    font-size: 0.8rem;
+    color: #15803d;
+  }
+
+  .customer-order__original-price {
+    display: block;
+    color: color-mix(in srgb, var(--color-foreground, #333) 45%, transparent);
+    font-size: 0.85rem;
+  }
+
+  .customer-order__sale-price {
+    color: var(--color-foreground, #333);
+  }
+
+  .customer-order__totals {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .customer-order__totals-table {
+    border-collapse: collapse;
+    min-width: 280px;
+    font-size: 0.9rem;
+  }
+
+  .customer-order__totals-label,
+  .customer-order__totals-value {
+    padding: 6px 0 6px 24px;
+    vertical-align: baseline;
+  }
+
+  .customer-order__totals-label {
+    color: color-mix(in srgb, var(--color-foreground, #333) 70%, transparent);
+    text-align: left;
+    padding-left: 0;
+  }
+
+  .customer-order__totals-value {
+    text-align: right;
+  }
+
+  .customer-order__totals-discount .customer-order__totals-value {
+    color: #15803d;
+  }
+
+  .customer-order__discount-name {
+    font-size: 0.8rem;
+  }
+
+  .customer-order__totals-final .customer-order__totals-label,
+  .customer-order__totals-final .customer-order__totals-value {
+    padding-top: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    border-top: 2px solid color-mix(in srgb, var(--color-foreground, #333) 15%, transparent);
+  }
+
+  .customer-order__status-label {
+    font-size: 0.875rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .customer-order__address {
+    font-style: normal;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .customer-order__no-shipping {
+    color: color-mix(in srgb, var(--color-foreground, #333) 55%, transparent);
+    font-size: 0.9rem;
+  }
+
+  .customer-account__status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-foreground, #333) 10%, transparent);
+  }
+
+  .customer-account__status-badge--paid,
+  .customer-account__status-badge--fulfilled {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .customer-account__status-badge--pending,
+  .customer-account__status-badge--partial,
+  .customer-account__status-badge--partially_fulfilled {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+
+  .customer-account__status-badge--refunded,
+  .customer-account__status-badge--voided,
+  .customer-account__status-badge--unfulfilled {
+    background: color-mix(in srgb, var(--color-foreground, #333) 10%, transparent);
+    color: color-mix(in srgb, var(--color-foreground, #333) 70%, transparent);
+  }
+
+  @media (max-width: 600px) {
+    .customer-order__table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .customer-order__totals {
+      justify-content: stretch;
+    }
+
+    .customer-order__totals-table {
+      width: 100%;
+    }
+  }
+</style>

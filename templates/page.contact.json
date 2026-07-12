@@ -1,0 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "contact_form": {
+      "type": "contact-form",
+      "settings": {
+        "subheading": "Get in touch",
+        "heading": "Contact us",
+        "intro_text": "<p>Have a question or need help? We’d love to hear from you. Fill out the form and we’ll get back to you as soon as possible.</p>",
+        "layout": "two-column",
+        "info_heading": "We’re here to help",
+        "info_text": "<p>Reach out through the form or use the details below — we typically respond within one business day.</p>",
+        "hours": "Mon – Fri, 9am – 5pm",
+        "show_phone_field": false,
+        "textarea_rows": 6,
+        "button_label": "Send message",
+        "button_style": "primary"
+      }
+    }
+  },
+  "order": [
+    "contact_form"
+  ]
+}

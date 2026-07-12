@@ -1,0 +1,218 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "hero",
+      "blocks": {
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Shop our",
+            "heading": "ANNIVERSARY SALE",
+            "text": "<p>WHILE IT LASTS</p>",
+            "button_label": "Shop now",
+            "button_link": "shopify://collections",
+            "button_style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "slide_2"
+      ],
+      "custom_css": [
+        "a.hero-slide__button.button.button--primary {font-size: 14px; text-transform: uppercase; margin-top: 10px; padding: 8px 15px; min-height: 0;}"
+      ],
+      "settings": {
+        "desktop_height": 700,
+        "mobile_height": 400,
+        "enable_parallax": false,
+        "auto_change_slides": true,
+        "change_images_every": 5,
+        "lazy_load_images": false,
+        "desktop_natural_height": false,
+        "desktop_text_vertical": "center",
+        "desktop_text_horizontal": "left",
+        "desktop_heading_size": 88,
+        "desktop_body_size": 17,
+        "mobile_natural_height": false,
+        "mobile_text_vertical": "end",
+        "mobile_text_horizontal": "center",
+        "mobile_heading_size": 42,
+        "mobile_body_size": 14
+      }
+    },
+    "rich_text_R6rdEy": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_3fQAQE": {
+          "type": "heading",
+          "settings": {
+            "text": "5 YEARS OF LOVE"
+          }
+        },
+        "text_zrQa44": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Welcome!<br/>Five years ago, my life changed in two beautiful ways: I became [STORE]’s mom, and I opened the doors to this little shop. Since then, we’ve grown side by side – [STORE] into a bright, joyful girl, and the store into a cozy place filled with treasures and wonderful people like you.<br/><br/>To mark this special milestone, we’re celebrating with an extra BIG 5th Birthday Sale! 🎉<br/>I’d love for you to join us as we share the joy and raise a toast to 5 years of love, growth, and community.</p><p><strong>With love,<br/>[STORE] ❤️</strong></p>"
+          }
+        },
+        "button_x9eLic": {
+          "type": "button",
+          "settings": {
+            "label": "Shop now",
+            "link": "",
+            "style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_3fQAQE",
+        "text_zrQa44",
+        "button_x9eLic"
+      ],
+      "name": "Rich text",
+      "settings": {
+        "color_scheme": "",
+        "gap": 16,
+        "text_align": "center"
+      }
+    },
+    "featured_collection_eaj4Te": {
+      "type": "featured-collection",
+      "name": "Featured collection",
+      "settings": {
+        "color_scheme": "",
+        "heading": "Bags",
+        "collection": "frontpage",
+        "products_per_row": 4,
+        "rows": 3,
+        "enable_swipe_on_mobile": true,
+        "show_view_all": true,
+        "view_all_position": "header",
+        "view_all_style": "link",
+        "show_section_divider": false
+      }
+    },
+    "background_image_text_BBpg4L": {
+      "type": "background-image-text",
+      "name": "Background image text",
+      "settings": {
+        "subtitle": "",
+        "title": "30-Day Return Guarantee",
+        "text": "<p>Your satisfaction is our focus. Our 30-day return policy guarantees you maximum flexibility and the best shopping experience</p>",
+        "button_label": "",
+        "button_link": "",
+        "layout": "left",
+        "height": 550,
+        "content_background": "#fff",
+        "color_scheme": "scheme-1",
+        "parallax": false,
+        "parallax_direction": "top",
+        "lazyload_images": true
+      }
+    },
+    "collection_list_3ixp7M": {
+      "type": "collection-list",
+      "blocks": {
+        "collection_Gx3EVW": {
+          "type": "collection",
+          "settings": {
+            "collection": "olivias-favorite-dresses"
+          }
+        },
+        "collection_MJcCg6": {
+          "type": "collection",
+          "settings": {
+            "collection": "new-dresses"
+          }
+        },
+        "collection_af3RiX": {
+          "type": "collection",
+          "settings": {
+            "collection": "pants"
+          }
+        },
+        "collection_GGnxUt": {
+          "type": "collection",
+          "settings": {
+            "collection": "leather-bags"
+          }
+        }
+      },
+      "block_order": [
+        "collection_Gx3EVW",
+        "collection_MJcCg6",
+        "collection_af3RiX",
+        "collection_GGnxUt"
+      ],
+      "name": "Collection list",
+      "settings": {
+        "heading": "",
+        "show_section_divider": false,
+        "collections_per_row": 4,
+        "add_spacing": true,
+        "overlay_opacity": 70
+      }
+    },
+    "trust_points_6g6Cx7": {
+      "type": "trust-points",
+      "blocks": {
+        "point_ay8AcE": {
+          "type": "point",
+          "settings": {
+            "icon": "shipping",
+            "icon_size": 30,
+            "title": "Free Shipping",
+            "text": "<p>We offer free shipping for maximum customer comfort. Your satisfaction is important to us, which is why we offer smooth and free delivery.</p>"
+          }
+        },
+        "point_P4eJ7X": {
+          "type": "point",
+          "settings": {
+            "icon": "return",
+            "icon_size": 30,
+            "title": "30-Day Return Guarantee",
+            "text": "<p>Your satisfaction is our focus. Our 30-day return policy guarantees you maximum flexibility and the best shopping experience.</p>"
+          }
+        },
+        "point_YxtbK7": {
+          "type": "point",
+          "settings": {
+            "icon": "secure",
+            "icon_size": 30,
+            "title": "100% Secure Payment",
+            "text": "<p>We offer a variety of secure payment options. Pay easily and enjoy a safe shopping experience.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "point_ay8AcE",
+        "point_P4eJ7X",
+        "point_YxtbK7"
+      ],
+      "name": "Trust points",
+      "settings": {
+        "color_scheme": "",
+        "subheading": "",
+        "heading": "",
+        "show_section_divider": false
+      }
+    }
+  },
+  "order": [
+    "main",
+    "rich_text_R6rdEy",
+    "featured_collection_eaj4Te",
+    "background_image_text_BBpg4L",
+    "collection_list_3ixp7M",
+    "trust_points_6g6Cx7"
+  ]
+}

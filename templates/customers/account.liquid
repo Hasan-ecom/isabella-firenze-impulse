@@ -1,0 +1,225 @@
+<div class="customer-page customer-account">
+  <div class="customer-page__inner customer-account__inner">
+    <div class="customer-account__header">
+      <h1 class="customer-page__heading">{{ 'customer.account.title' | t | default: 'My account' }}</h1>
+      <a href="{{ routes.account_logout_url }}" class="customer-page__link">
+        {{ 'customer.account.log_out' | t | default: 'Log out' }}
+      </a>
+    </div>
+
+    <div class="customer-account__grid">
+      <div class="customer-account__section">
+        <h2 class="customer-page__subheading">{{ 'customer.account.details' | t | default: 'Account details' }}</h2>
+        <div class="customer-account__details-card">
+          <p class="customer-account__name">{{ customer.name }}</p>
+          <p class="customer-account__email">{{ customer.email }}</p>
+
+          {% if customer.default_address %}
+            <div class="customer-account__default-address">
+              <p class="customer-account__address-heading">{{ 'customer.account.default_address' | t | default: 'Default address' }}</p>
+              <address class="customer-account__address">
+                {{ customer.default_address.address1 }}<br>
+                {% if customer.default_address.address2 != blank %}{{ customer.default_address.address2 }}<br>{% endif %}
+                {{ customer.default_address.city }}, {% if customer.default_address.province != blank %}{{ customer.default_address.province }}, {% endif %}{{ customer.default_address.zip }}<br>
+                {{ customer.default_address.country }}
+              </address>
+            </div>
+          {% endif %}
+
+          <a href="{{ routes.account_addresses_url }}" class="button button--secondary customer-account__addresses-link">
+            {{ 'customer.account.manage_addresses' | t | default: 'Manage addresses' }}
+            <span>({{ customer.addresses_count }})</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="customer-account__section">
+        <h2 class="customer-page__subheading">{{ 'customer.account.orders' | t | default: 'Order history' }}</h2>
+
+        {% if customer.orders.size == 0 %}
+          <p class="customer-account__empty">{{ 'customer.account.no_orders' | t | default: "You haven't placed any orders yet." }}</p>
+        {% else %}
+          <table class="customer-account__orders-table">
+            <thead>
+              <tr>
+                <th class="customer-account__orders-th">{{ 'customer.orders.order_number' | t | default: 'Order' }}</th>
+                <th class="customer-account__orders-th">{{ 'customer.orders.date' | t | default: 'Date' }}</th>
+                <th class="customer-account__orders-th">{{ 'customer.orders.payment_status' | t | default: 'Payment' }}</th>
+                <th class="customer-account__orders-th">{{ 'customer.orders.fulfillment_status' | t | default: 'Fulfillment' }}</th>
+                <th class="customer-account__orders-th customer-account__orders-th--right">{{ 'customer.orders.total' | t | default: 'Total' }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in customer.orders %}
+                <tr class="customer-account__orders-row">
+                  <td class="customer-account__orders-td">
+                    <a href="{{ order.customer_url }}" class="customer-account__order-link">
+                      {{ order.name }}
+                    </a>
+                  </td>
+                  <td class="customer-account__orders-td">{{ order.created_at | date: format: 'date' }}</td>
+                  <td class="customer-account__orders-td">
+                    <span class="customer-account__status-badge customer-account__status-badge--{{ order.financial_status }}">
+                      {{ order.financial_status_label }}
+                    </span>
+                  </td>
+                  <td class="customer-account__orders-td">
+                    <span class="customer-account__status-badge customer-account__status-badge--{{ order.fulfillment_status }}">
+                      {{ order.fulfillment_status_label | default: ('customer.orders.unfulfilled' | t | default: 'Unfulfilled') }}
+                    </span>
+                  </td>
+                  <td class="customer-account__orders-td customer-account__orders-td--right">{{ order.total_price | money_with_currency }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .customer-account__inner {
+    max-width: 900px !important;
+  }
+
+  .customer-account__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .customer-account__grid {
+    display: grid;
+    gap: 40px;
+  }
+
+  .customer-account__details-card {
+    padding: 24px;
+    border: 1px solid color-mix(in srgb, var(--color-foreground, #333) 12%, transparent);
+    border-radius: var(--style-border-radius-theme, 4px);
+    display: grid;
+    gap: 12px;
+  }
+
+  .customer-account__name {
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .customer-account__email {
+    color: color-mix(in srgb, var(--color-foreground, #333) 65%, transparent);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .customer-account__default-address {
+    padding-top: 12px;
+    border-top: 1px solid color-mix(in srgb, var(--color-foreground, #333) 10%, transparent);
+  }
+
+  .customer-account__address-heading {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 6px;
+    color: color-mix(in srgb, var(--color-foreground, #333) 60%, transparent);
+  }
+
+  .customer-account__address {
+    font-style: normal;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .customer-account__addresses-link {
+    width: fit-content;
+  }
+
+  .customer-account__empty {
+    color: color-mix(in srgb, var(--color-foreground, #333) 60%, transparent);
+  }
+
+  .customer-account__orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .customer-account__orders-th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: color-mix(in srgb, var(--color-foreground, #333) 60%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground, #333) 12%, transparent);
+  }
+
+  .customer-account__orders-th--right {
+    text-align: right;
+  }
+
+  .customer-account__orders-row:not(:last-child) .customer-account__orders-td {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-foreground, #333) 8%, transparent);
+  }
+
+  .customer-account__orders-td {
+    padding: 14px 12px;
+    vertical-align: middle;
+  }
+
+  .customer-account__orders-td--right {
+    text-align: right;
+  }
+
+  .customer-account__order-link {
+    color: var(--color-foreground, #333);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .customer-account__status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-foreground, #333) 10%, transparent);
+  }
+
+  .customer-account__status-badge--paid,
+  .customer-account__status-badge--fulfilled {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .customer-account__status-badge--pending,
+  .customer-account__status-badge--partial,
+  .customer-account__status-badge--partially_fulfilled {
+    background: #fef9c3;
+    color: #854d0e;
+  }
+
+  .customer-account__status-badge--refunded,
+  .customer-account__status-badge--voided,
+  .customer-account__status-badge--unfulfilled {
+    background: color-mix(in srgb, var(--color-foreground, #333) 10%, transparent);
+    color: color-mix(in srgb, var(--color-foreground, #333) 70%, transparent);
+  }
+
+  @media (max-width: 700px) {
+    .customer-account__orders-table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+</style>

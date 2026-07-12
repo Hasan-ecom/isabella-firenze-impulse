@@ -1,0 +1,72 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "rich_text_xWRhhK": {
+      "type": "rich-text",
+      "blocks": {
+        "image_3PQenV": {
+          "type": "image",
+          "settings": {
+            "image_width": "full"
+          }
+        },
+        "heading_tUx8Uy": {
+          "type": "heading",
+          "settings": {
+            "text": "5 YEARS OF LOVE"
+          }
+        },
+        "text_D9wCMB": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Five years ago, I began two special journeys:</p><p>The birth of my daughter [STORE] and the opening of my store.</p><p>Now that [STORE] is turning 5, we’re celebrating this double milestone together! 🎉</p><p>That’s why we’re having a big <strong>5th Birthday Sale</strong> – come by, join the fun, and raise a glass with us to 5 years full of love, growth, and community.</p><p><strong>With Love,<br/>[STORE]❤️</strong></p><p>🎁 <strong>Birthday Gift Discounts:</strong><br/>Buy 2 → 10% off<br/>Buy 3 → 15% off<br/>Buy 4 → 20% off<br/>Buy 5 → 25% off</p>"
+          }
+        },
+        "button_mGX4qe": {
+          "type": "button",
+          "settings": {
+            "label": "Shop now",
+            "link": "",
+            "style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "image_3PQenV",
+        "heading_tUx8Uy",
+        "text_D9wCMB",
+        "button_mGX4qe"
+      ],
+      "custom_css": [],
+      "name": "Rich text",
+      "settings": {
+        "color_scheme": "",
+        "gap": 16,
+        "text_align": "center"
+      }
+    },
+    "main": {
+      "type": "collection",
+      "settings": {
+        "show_title": false,
+        "show_description": false,
+        "show_product_count": false,
+        "show_sort": false,
+        "show_filters": false,
+        "products_per_page": 20
+      }
+    }
+  },
+  "order": [
+    "rich_text_xWRhhK",
+    "main"
+  ]
+}

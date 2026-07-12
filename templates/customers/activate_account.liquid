@@ -1,0 +1,65 @@
+<div class="customer-page customer-activate">
+  <div class="customer-page__inner">
+    <h1 class="customer-page__heading">{{ 'customer.activate_account.title' | t | default: 'Activate your account' }}</h1>
+    <p>{{ 'customer.activate_account.subtext' | t | default: 'Create a password to activate your account.' }}</p>
+
+    {%- form 'activate_customer_password' -%}
+      {%- if form.errors -%}
+        <div class="customer-page__errors" role="alert">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="ActivatePassword">
+          {{ 'customer.activate_account.password' | t | default: 'Password' }}
+          <span aria-hidden="true">*</span>
+          <span class="visually-hidden">{{ 'customer.activate_account.required' | t | default: '(required)' }}</span>
+        </label>
+        <input
+          class="customer-page__input"
+          type="password"
+          id="ActivatePassword"
+          name="customer[password]"
+          autocomplete="new-password"
+          aria-required="true"
+          required
+        >
+      </div>
+
+      <div class="customer-page__field">
+        <label class="customer-page__label" for="ActivatePasswordConfirm">
+          {{ 'customer.activate_account.password_confirm' | t | default: 'Confirm password' }}
+          <span aria-hidden="true">*</span>
+          <span class="visually-hidden">{{ 'customer.activate_account.required' | t | default: '(required)' }}</span>
+        </label>
+        <input
+          class="customer-page__input"
+          type="password"
+          id="ActivatePasswordConfirm"
+          name="customer[password_confirmation]"
+          autocomplete="new-password"
+          aria-required="true"
+          required
+        >
+      </div>
+
+      <div class="customer-activate__actions">
+        <button type="submit" class="button button--primary">
+          {{ 'customer.activate_account.submit' | t | default: 'Activate account' }}
+        </button>
+        <a href="{{ routes.account_login_url }}" class="button button--secondary">
+          {{ 'customer.activate_account.cancel' | t | default: 'Cancel' }}
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+</div>
+
+<style>
+  .customer-activate__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>
