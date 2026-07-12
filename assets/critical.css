@@ -1,0 +1,580 @@
+/** Critical CSS for the theme. This file is included on every page. */
+
+/* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-height: 100svh;
+}
+
+html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+  overflow: hidden;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  border-radius: var(--style-border-radius-inputs);
+}
+
+select {
+  background-color: var(--color-background);
+  color: currentcolor;
+}
+
+button {
+  font: inherit;
+}
+
+/* Baseline keyboard focus ring. Element-specific :focus-visible styles override this. */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Screen-reader-only utility, used across multiple sections. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect reduced-motion preferences globally. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+dialog {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  border-radius: var(--style-border-radius-theme);
+}
+
+p {
+  text-wrap: pretty;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p:empty {
+  display: none;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6):first-child,
+:empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
+  margin-block-start: 0;
+}
+
+:is(p, h1, h2, h3, h4, h5, h6):last-child,
+:where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
+  margin-block-end: 0;
+}
+
+/** Theme styles below */
+body {
+  font-family: var(--font-primary--family);
+  font-style: var(--font-primary--style);
+  font-weight: var(--font-primary--weight);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line-height);
+  letter-spacing: var(--type-body-letter-spacing);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+a {
+  color: inherit;
+}
+
+a[x-apple-data-detectors],
+button,
+input[type='submit'],
+input[type='button'] {
+  color: inherit;
+}
+
+a[x-apple-data-detectors] {
+  text-decoration: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading--family);
+  font-style: var(--font-heading--style);
+  font-weight: var(--font-heading--weight);
+  line-height: var(--type-heading-line-height);
+  letter-spacing: var(--type-heading-letter-spacing);
+}
+
+.skip-link {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  border-radius: var(--style-border-radius-buttons);
+  background: var(--color-foreground);
+  color: var(--color-background);
+  text-decoration: none;
+  transform: translateY(-180%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.button,
+.shopify-payment-button__button--unbranded {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--style-border-radius-buttons);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.button--primary {
+  background-color: var(--button-primary-background);
+  color: var(--button-primary-text);
+  border-color: var(--button-primary-border);
+}
+
+.button--primary:hover,
+.button--primary:focus-visible {
+  background-color: var(--button-primary-background-hover);
+  color: var(--button-primary-text-hover);
+  border-color: var(--button-primary-border-hover);
+}
+
+.button--secondary,
+.shopify-payment-button__button--unbranded {
+  background-color: var(--button-secondary-background);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border);
+}
+
+.button--secondary:hover,
+.button--secondary:focus-visible,
+.shopify-payment-button__button--unbranded:hover,
+.shopify-payment-button__button--unbranded:focus-visible {
+  background-color: var(--button-secondary-background-hover);
+  color: var(--button-secondary-text-hover);
+  border-color: var(--button-secondary-border-hover);
+}
+
+.button:disabled,
+.button[aria-disabled='true'],
+.shopify-payment-button__button--unbranded[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.shopify-payment-button {
+  margin-top: 0.75rem;
+}
+
+.shopify-payment-button__button--unbranded {
+  width: 100%;
+}
+
+/** Section layout utilities */
+
+/**
+ * Setup a grid that enables both full-width and constrained layouts
+ * depending on the class of the child elements.
+ *
+ * By default, a minimum content margin is set on the left and right
+ * sides of the section and the content is centered in the viewport to
+ * not exceed the maximum page width.
+ *
+ * When a child element is given the `full-width` class, it will span
+ * the entire viewport.
+ */
+.shopify-section {
+  --content-width: min(
+    calc(var(--page-width) - var(--page-margin) * 2),
+    calc(100% - var(--page-margin) * 2)
+  );
+  --content-margin: minmax(var(--page-margin), 1fr);
+  --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
+
+  /* This is required to make <img> elements work as background images */
+  position: relative;
+  grid-template-columns: var(--content-grid);
+  display: grid;
+  width: 100%;
+}
+
+/* Child elements, by default, are constrained to the central column of the grid. */
+.shopify-section > * {
+  grid-column: 2;
+}
+
+/* Child elements that use the full-width utility class span the entire viewport. */
+.shopify-section > .full-width {
+  grid-column: 1 / -1;
+}
+
+.product-tile {
+  height: 100%;
+}
+
+.product-tile__link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-tile__link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.product-tile__media {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #f3f4f6;
+  border-radius: var(--style-border-radius-product-tile);
+}
+
+.product-tile--portrait .product-tile__media {
+  aspect-ratio: 4 / 5;
+}
+
+.product-tile--landscape .product-tile__media {
+  aspect-ratio: 4 / 3;
+}
+
+.product-tile--natural .product-tile__media {
+  aspect-ratio: auto;
+}
+
+.product-tile__image {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.product-tile--zoom .product-tile__image {
+  object-fit: cover;
+}
+
+.product-tile--natural .product-tile__image {
+  position: relative;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.product-tile--natural .product-tile__image--secondary {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.product-tile__image--placeholder {
+  background: linear-gradient(135deg, #e7ebf0, #d8e0ea);
+  fill: rgba(16, 24, 32, 0.2);
+}
+
+.product-tile__badge {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--product-tile-badge-padding-y) var(--product-tile-badge-padding-x);
+  border-radius: var(--product-tile-badge-border-radius);
+  background: var(--product-tile-badge-background);
+  color: var(--product-tile-badge-text-color);
+  font-size: var(--product-tile-badge-font-size);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+.product-tile__badge--top-left {
+  top: var(--product-tile-badge-offset-y);
+  left: var(--product-tile-badge-offset-x);
+}
+
+.product-tile__badge--top-right {
+  top: var(--product-tile-badge-offset-y);
+  right: var(--product-tile-badge-offset-x);
+}
+
+.product-tile__badge--bottom-left {
+  bottom: var(--product-tile-badge-offset-y);
+  left: var(--product-tile-badge-offset-x);
+}
+
+.product-tile__badge--bottom-right {
+  right: var(--product-tile-badge-offset-x);
+  bottom: var(--product-tile-badge-offset-y);
+}
+
+.product-tile__image--secondary {
+  opacity: 0;
+}
+
+.product-tile--has-secondary .product-tile__link:hover .product-tile__image--primary,
+.product-tile--has-secondary .product-tile__link:focus-visible .product-tile__image--primary {
+  opacity: 0;
+}
+
+.product-tile--has-secondary .product-tile__link:hover .product-tile__image--secondary,
+.product-tile--has-secondary .product-tile__link:focus-visible .product-tile__image--secondary {
+  opacity: 1;
+}
+
+.product-tile__link:hover .product-tile__image,
+.product-tile__link:focus-visible .product-tile__image {
+  transform: scale(1.03);
+}
+
+.product-tile--natural .product-tile__link:hover .product-tile__image,
+.product-tile--natural .product-tile__link:focus-visible .product-tile__image {
+  transform: none;
+}
+
+.product-tile__quick-shop {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1;
+  min-height: 40px;
+  padding: 0.65rem 1rem;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.product-tile__link:hover .product-tile__quick-shop,
+.product-tile__link:focus-visible .product-tile__quick-shop {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-tile__content {
+  padding-top: 14px;
+}
+
+.product-tile__vendor {
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(16, 24, 32, 0.58);
+}
+
+.product-tile__title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.product-tile__price {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+  color: var(--product-tile-price-color);
+}
+
+.product-tile__price-current {
+  color: var(--product-tile-price-color);
+}
+
+.product-tile__price-compare {
+  text-decoration: line-through;
+  color: var(--product-tile-compare-price-color);
+}
+
+.product-tile__swatches {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.product-tile__swatch {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid rgba(16, 24, 32, 0.15);
+  background-position: center;
+  background-size: cover;
+  flex: 0 0 auto;
+}
+
+.product-tile__swatches--round .product-tile__swatch {
+  border-radius: 999px;
+}
+
+.product-tile__swatches--square .product-tile__swatch {
+  border-radius: 0.35rem;
+}
+
+.product-tile__swatch--unavailable {
+  opacity: 0.35;
+}
+
+.product-tile__swatch-count {
+  font-size: 0.875rem;
+  color: rgba(16, 24, 32, 0.72);
+}
+
+@media (max-width: 749px) {
+  .product-tile__quick-shop {
+    right: 12px;
+    bottom: 12px;
+    min-height: 36px;
+    padding: 0.55rem 0.85rem;
+  }
+}
+
+/* Wishlist button on product tiles */
+.product-tile {
+  position: relative;
+}
+
+.product-tile__wishlist {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+/* Back to top button */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 24, 32, 0.14);
+  background: var(--color-background, #fff);
+  color: var(--color-foreground, #111);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(16, 24, 32, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  transform: translateY(8px);
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.back-to-top:hover {
+  background: var(--color-foreground, #111);
+  color: var(--color-background, #fff);
+  border-color: transparent;
+}
+
+/**
+ * Global reduced-motion guard.
+ * Respects the visitor's OS-level "reduce motion" preference across the whole
+ * theme, so individual sections don't each have to opt in. Animations and
+ * transitions are reduced to near-instant rather than removed, and smooth
+ * scrolling is disabled.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}
