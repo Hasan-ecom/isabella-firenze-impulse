@@ -1,0 +1,142 @@
+{% comment %}
+  404 section — search box pre-filled with the slug of the missing URL,
+  plus a back-to-shopping CTA.
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
+{% endcomment %}
+
+{% liquid
+  assign missing_path = request.path | remove_first: '/'
+  assign search_prefill = missing_path | replace: '-', ' ' | replace: '/', ' ' | strip
+%}
+
+<section class="not-found-page">
+  <div class="not-found-page__inner">
+    <p class="not-found-page__eyebrow">404</p>
+    <h1 class="not-found-page__heading">{{ '404.title' | t }}</h1>
+    <p class="not-found-page__copy">{{ '404.not_found' | t }}</p>
+
+    <form action="{{ routes.search_url }}" method="get" class="not-found-page__search" role="search">
+      <input type="hidden" name="type" value="product">
+      <label class="visually-hidden" for="NotFoundSearch">{{ 'search.placeholder' | t }}</label>
+      <div class="not-found-page__search-wrap">
+        <input
+          id="NotFoundSearch"
+          type="search"
+          name="q"
+          class="not-found-page__search-input"
+          value="{{ search_prefill | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+        >
+        <button type="submit" class="not-found-page__search-button button button--primary" aria-label="{{ 'search.submit' | t }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span>{{ 'search.submit' | t }}</span>
+        </button>
+      </div>
+    </form>
+
+    <a href="{{ routes.all_products_collection_url }}" class="button button--secondary not-found-page__cta">
+      {{ '404.back_to_shopping' | t }}
+    </a>
+  </div>
+</section>
+
+{% stylesheet %}
+  .not-found-page {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    padding-block: 64px;
+  }
+
+  .not-found-page__inner {
+    width: min(100% - 32px, 560px);
+    margin-inline: auto;
+    display: grid;
+    gap: 20px;
+    justify-items: start;
+  }
+
+  .not-found-page__eyebrow {
+    margin: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-foreground) 45%, transparent);
+  }
+
+  .not-found-page__heading {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+  }
+
+  .not-found-page__copy {
+    margin: 0;
+    color: color-mix(in srgb, var(--color-foreground) 65%, transparent);
+  }
+
+  .not-found-page__search {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .not-found-page__search-wrap {
+    display: flex;
+    gap: 8px;
+  }
+
+  .not-found-page__search-input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: var(--type-body-size);
+    color: var(--color-foreground);
+    background: var(--color-background);
+    border: 1px solid var(--colorBorder);
+    border-radius: var(--style-border-radius-inputs);
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .not-found-page__search-input:focus {
+    outline: none;
+    border-color: var(--color-foreground);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-foreground) 10%, transparent);
+  }
+
+  .not-found-page__search-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .not-found-page__cta {
+    margin-top: 4px;
+  }
+
+  @media (max-width: 480px) {
+    .not-found-page__search-wrap {
+      flex-direction: column;
+    }
+
+    .not-found-page__search-button {
+      justify-content: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.404",
+  "settings": []
+}
+{% endschema %}

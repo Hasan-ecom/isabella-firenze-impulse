@@ -1,0 +1,528 @@
+{% liquid
+  assign has_announcements = false
+  assign populated_count = 0
+  assign ticker_repeat_count = 8
+  assign announcement_font_family = 'var(--font-primary--family)'
+  assign announcement_font_style = 'var(--font-primary--style)'
+  assign announcement_font_weight = 'var(--font-primary--weight)'
+
+  if section.settings.font_preset == 'heading'
+    assign announcement_font_family = 'var(--font-heading--family)'
+    assign announcement_font_style = 'var(--font-heading--style)'
+    assign announcement_font_weight = 'var(--font-heading--weight)'
+  endif
+
+  for block in section.blocks
+    if block.settings.text != blank
+      assign has_announcements = true
+      assign populated_count = populated_count | plus: 1
+    endif
+  endfor
+%}
+
+{% if has_announcements %}
+  <announcement-bar-section
+    class="announcement-bar announcement-bar--{{ section.settings.display_mode }} full-width"
+    data-section-id="{{ section.id }}"
+    data-mode="{{ section.settings.display_mode }}"
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-interval="{{ section.settings.autoplay_interval | times: 1000 }}"
+    style="
+      --announcement-background: {{ section.settings.color_scheme.settings.background }};
+      --announcement-foreground: {{ section.settings.color_scheme.settings.text }};
+      --announcement-speed: {{ section.settings.scroll_speed }}s;
+      --announcement-repeat-count: {{ ticker_repeat_count }};
+      --announcement-padding-y: {% if section.settings.compact %}5px{% else %}12px{% endif %};
+      --announcement-padding-y-mobile: {% if section.settings.compact %}4px{% else %}10px{% endif %};
+      --announcement-font-size: {{ section.settings.font_size_desktop }}px;
+      --announcement-font-size-mobile: {{ section.settings.font_size_mobile }}px;
+      --announcement-font-family: {{ announcement_font_family }};
+      --announcement-font-style: {{ announcement_font_style }};
+      --announcement-font-weight: {{ announcement_font_weight }};
+    "
+  >
+    {% if section.settings.display_mode == 'ticker' %}
+      <div class="announcement-bar__viewport">
+        <div class="announcement-bar__track announcement-bar__track--ticker announcement-bar__inner--{{ section.settings.alignment }}">
+          {% for repeat in (1..ticker_repeat_count) %}
+            <div class="announcement-bar__group" {% if repeat > 1 %}aria-hidden="true"{% endif %}>
+              {% for block in section.blocks %}
+                {% if block.settings.text != blank %}
+                  <div class="announcement-bar__item" {{ block.shopify_attributes }}>
+                    {% if block.settings.link != blank %}
+                      <a href="{{ block.settings.link }}" class="announcement-bar__link">{{ block.settings.text }}</a>
+                    {% else %}
+                      <p class="announcement-bar__text">{{ block.settings.text }}</p>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="announcement-bar__inner announcement-bar__inner--slider announcement-bar__inner--{{ section.settings.alignment }}{% if populated_count == 1 %} announcement-bar__inner--single{% endif %}">
+        {% if populated_count > 1 %}
+          <button type="button" class="announcement-bar__button announcement-bar__button--prev" aria-label="{{ 'sections.announcement_bar.previous' | t }}">
+            <span aria-hidden="true">&lt;</span>
+          </button>
+        {% endif %}
+
+        <div class="announcement-bar__slider" role="region" aria-label="{{ 'sections.announcement_bar.region_label' | t }}">
+          {% for block in section.blocks %}
+            {% if block.settings.text != blank %}
+              <div class="announcement-bar__slide{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+                {% if block.settings.link != blank %}
+                  <a href="{{ block.settings.link }}" class="announcement-bar__link">{{ block.settings.text }}</a>
+                {% else %}
+                  <p class="announcement-bar__text">{{ block.settings.text }}</p>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {% if populated_count > 1 %}
+          <button type="button" class="announcement-bar__button announcement-bar__button--next" aria-label="{{ 'sections.announcement_bar.next' | t }}">
+            <span aria-hidden="true">&gt;</span>
+          </button>
+        {% endif %}
+      </div>
+    {% endif %}
+  </announcement-bar-section>
+{% endif %}
+
+{% stylesheet %}
+  .announcement-bar {
+    background: var(--announcement-background);
+    color: var(--announcement-foreground);
+    overflow: hidden;
+  }
+
+  .announcement-bar__viewport,
+  .announcement-bar__inner {
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+  }
+
+  .announcement-bar__track,
+  .announcement-bar__inner {
+    padding: var(--announcement-padding-y) 0;
+    font-family: var(--announcement-font-family);
+    font-style: var(--announcement-font-style);
+    font-weight: var(--announcement-font-weight);
+    font-size: var(--announcement-font-size);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .announcement-bar__link,
+  .announcement-bar__text {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .announcement-bar__text {
+    margin: 0;
+  }
+
+  .announcement-bar--ticker .announcement-bar__track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: announcement-marquee var(--announcement-speed) linear infinite;
+  }
+
+  .announcement-bar--ticker .announcement-bar__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .announcement-bar--ticker .announcement-bar__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .announcement-bar--ticker .announcement-bar__item:not(:last-child)::after {
+    content: '';
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: currentcolor;
+    opacity: 0.6;
+  }
+
+  .announcement-bar--slider .announcement-bar__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .announcement-bar__slider {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    min-height: 1.5rem;
+    overflow: hidden;
+  }
+
+  .announcement-bar__slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateX(1.5rem);
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s ease;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .announcement-bar__slide.is-active {
+    position: relative;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  .announcement-bar__slide.is-leaving {
+    opacity: 0;
+    transform: translateX(-1.5rem);
+    z-index: 1;
+  }
+
+  .announcement-bar__button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .announcement-bar__inner--left .announcement-bar__slider,
+  .announcement-bar__inner--left .announcement-bar__slide {
+    text-align: left;
+  }
+
+  .announcement-bar__inner--left .announcement-bar__slide {
+    justify-content: flex-start;
+  }
+
+  .announcement-bar__inner--right .announcement-bar__slider,
+  .announcement-bar__inner--right .announcement-bar__slide {
+    text-align: right;
+  }
+
+  .announcement-bar__inner--right .announcement-bar__slide {
+    justify-content: flex-end;
+  }
+
+  .announcement-bar__inner--center .announcement-bar__slider,
+  .announcement-bar__inner--center .announcement-bar__slide {
+    text-align: center;
+  }
+
+  .announcement-bar__inner--center .announcement-bar__slide {
+    justify-content: center;
+  }
+
+  /* A single announcement has no nav buttons, so center it across the bar */
+  .announcement-bar--slider .announcement-bar__inner--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .announcement-bar--slider .announcement-bar__inner--single .announcement-bar__slider,
+  .announcement-bar--slider .announcement-bar__inner--single .announcement-bar__slide {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .announcement-bar--ticker:hover .announcement-bar__track,
+  .announcement-bar--ticker:focus-within .announcement-bar__track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-bar--ticker .announcement-bar__track {
+      animation: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .announcement-bar--ticker .announcement-bar__group:not(:first-child) {
+      display: none;
+    }
+
+    .announcement-bar__slide {
+      transition: none;
+    }
+  }
+
+  @keyframes announcement-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-1 * (100% / var(--announcement-repeat-count))));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .announcement-bar__track,
+    .announcement-bar__inner {
+      padding: var(--announcement-padding-y-mobile) 0;
+      font-size: var(--announcement-font-size-mobile);
+    }
+
+    .announcement-bar--slider .announcement-bar__inner {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .announcement-bar__button {
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class AnnouncementBarSection extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.mode !== 'slider') return;
+
+      this.slides = Array.from(this.querySelectorAll('.announcement-bar__slide'));
+      if (this.slides.length <= 1) return;
+
+      this.currentIndex = this.slides.findIndex((slide) => slide.classList.contains('is-active'));
+      if (this.currentIndex < 0) this.currentIndex = 0;
+      this.isAnimating = false;
+      this.animationDuration = 450;
+
+      this.prevButton = this.querySelector('.announcement-bar__button--prev');
+      this.nextButton = this.querySelector('.announcement-bar__button--next');
+
+      this.handlePrev = () => this.showSlide(this.currentIndex - 1);
+      this.handleNext = () => this.showSlide(this.currentIndex + 1);
+
+      if (this.prevButton) this.prevButton.addEventListener('click', this.handlePrev);
+      if (this.nextButton) this.nextButton.addEventListener('click', this.handleNext);
+
+      if (this.dataset.autoplay === 'true' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        this.startAutoplay();
+        this.addEventListener('mouseenter', this.stopAutoplay.bind(this));
+        this.addEventListener('mouseleave', this.startAutoplay.bind(this));
+      }
+    }
+
+    disconnectedCallback() {
+      if (this.prevButton) this.prevButton.removeEventListener('click', this.handlePrev);
+      if (this.nextButton) this.nextButton.removeEventListener('click', this.handleNext);
+      this.stopAutoplay();
+    }
+
+    showSlide(index) {
+      if (this.isAnimating) return;
+
+      const total = this.slides.length;
+      const nextIndex = (index + total) % total;
+      if (nextIndex === this.currentIndex) return;
+
+      const currentSlide = this.slides[this.currentIndex];
+      const nextSlide = this.slides[nextIndex];
+
+      this.isAnimating = true;
+      currentSlide.classList.add('is-leaving');
+      currentSlide.classList.remove('is-active');
+      nextSlide.classList.add('is-active');
+
+      window.setTimeout(() => {
+        currentSlide.classList.remove('is-leaving');
+        this.currentIndex = nextIndex;
+        this.isAnimating = false;
+      }, this.animationDuration);
+    }
+
+    startAutoplay() {
+      this.stopAutoplay();
+      const interval = Number(this.dataset.interval) || 4000;
+      this.autoplayTimer = window.setInterval(() => this.showSlide(this.currentIndex + 1), interval);
+    }
+
+    stopAutoplay() {
+      if (this.autoplayTimer) {
+        window.clearInterval(this.autoplayTimer);
+        this.autoplayTimer = null;
+      }
+    }
+  }
+
+  if (!customElements.get('announcement-bar-section')) {
+    customElements.define('announcement-bar-section', AnnouncementBarSection);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "select",
+      "id": "display_mode",
+      "label": "Announcement bar mode",
+      "options": [
+        { "value": "ticker", "label": "Auto-scrolling ticker" },
+        { "value": "slider", "label": "Carousel slider" }
+      ],
+      "default": "ticker"
+    },
+    {
+      "type": "paragraph",
+      "content": "Choose between an infinite scrolling ticker or a carousel slider."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay slider",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "compact",
+      "label": "Compact height",
+      "info": "Reduces the bar's vertical padding for a slimmer announcement bar.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Slider autoplay speed",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "label": "Ticker speed",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "select",
+      "id": "font_preset",
+      "label": "Font",
+      "options": [
+        { "value": "body", "label": "Body font" },
+        { "value": "heading", "label": "Heading font" }
+      ],
+      "default": "body"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size on desktop",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size on mobile",
+      "default": 13
+    },
+    {
+      "type": "paragraph",
+      "content": "You can add up to 12 announcements. Extra blocks beyond that limit will not appear."
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Announcement text",
+          "default": "Free shipping on orders over $75"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Announcement bar",
+      "blocks": [
+        {
+          "type": "announcement"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

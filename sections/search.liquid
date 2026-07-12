@@ -1,0 +1,266 @@
+{% comment %}
+  Search results template for products, pages, and articles.
+{% endcomment %}
+
+{% liquid
+  assign image_sizes = '(max-width: 749px) 100vw, (max-width: 989px) 50vw, 33vw'
+%}
+
+<section class="search-page section-{{ section.id }}">
+  <div class="search-page__inner">
+    <header class="search-page__header">
+      <div class="search-page__copy">
+        <h1 class="search-page__title">{{ 'search.title' | t }}</h1>
+        {% if search.performed %}
+          <p class="search-page__results-copy">
+            {{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}
+          </p>
+        {% endif %}
+      </div>
+
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+        <input
+          type="search"
+          size="50"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          class="search-page__input"
+        >
+        <button class="button button--primary search-page__submit" type="submit">{{ 'search.submit' | t }}</button>
+      </form>
+    </header>
+
+    {% if search.performed %}
+      {% paginate search.results by 20 %}
+        {% if search.results_count == 0 %}
+          <div class="search-page__empty">
+            <h2>{{ 'search.empty_title' | t }}</h2>
+            <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+          </div>
+        {% else %}
+          <div class="search-page__results-meta">
+            <p class="search-page__eyebrow">{{ 'search.results_label' | t }}</p>
+          </div>
+
+          <div class="search-page__results" role="list">
+            {% for result in search.results %}
+              <div class="search-page__result" role="listitem">
+                {% if result.object_type == 'product' %}
+                  {% render 'grid-item', product: result, sizes: image_sizes %}
+                {% else %}
+                  {% assign featured_image = result.image | default: result.featured_image %}
+                  <article class="search-page__editorial-card">
+                    <a href="{{ result.url }}" class="search-page__editorial-media">
+                      {% if featured_image %}
+                        {{
+                          featured_image
+                          | image_url: width: 900, height: 700, crop: 'center'
+                          | image_tag: loading: 'lazy', class: 'search-page__editorial-image', alt: featured_image.alt | default: result.title, widths: '300, 450, 600, 900', sizes: '(min-width: 750px) 33vw, 100vw'
+                        }}
+                      {% else %}
+                        <div class="search-page__editorial-placeholder" aria-hidden="true"></div>
+                      {% endif %}
+                    </a>
+                    <div class="search-page__editorial-content">
+                      <p class="search-page__result-type">
+                        {% if result.object_type == 'article' %}
+                          {{ 'search.result_type_article' | t }}
+                        {% else %}
+                          {{ 'search.result_type_page' | t }}
+                        {% endif %}
+                      </p>
+                      <h2 class="search-page__result-title">
+                        <a href="{{ result.url }}">{{ result.title }}</a>
+                      </h2>
+                      {% if result.object_type == 'article' %}
+                        <p class="search-page__result-excerpt">{{ result.excerpt_or_content | strip_html | truncatewords: 28 }}</p>
+                      {% else %}
+                        <p class="search-page__result-excerpt">{{ result.content | strip_html | truncatewords: 28 }}</p>
+                      {% endif %}
+                    </div>
+                  </article>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="search-page__pagination">
+            {{ paginate | default_pagination }}
+          </div>
+        {% endif %}
+      {% endpaginate %}
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .search-page {
+    padding: 40px 0 56px;
+  }
+
+  .search-page__inner {
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+    display: grid;
+    gap: 24px;
+  }
+
+  .search-page__header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .search-page__copy {
+    display: grid;
+    gap: 10px;
+  }
+
+  .search-page__title {
+    margin: 0;
+  }
+
+  .search-page__results-copy,
+  .search-page__eyebrow,
+  .search-page__result-type,
+  .search-page__result-excerpt {
+    color: rgba(16, 24, 32, 0.68);
+  }
+
+  .search-page__eyebrow,
+  .search-page__result-type {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .search-page__form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    width: min(100%, 32rem);
+  }
+
+  .search-page__input {
+    min-height: 48px;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(16, 24, 32, 0.12);
+    border-radius: var(--style-border-radius-inputs);
+    background: transparent;
+    font: inherit;
+  }
+
+  .search-page__results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .search-page__result {
+    min-width: 0;
+  }
+
+  .search-page__editorial-card {
+    height: 100%;
+    display: grid;
+    gap: 14px;
+  }
+
+  .search-page__editorial-media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--style-border-radius-theme);
+    background: rgba(16, 24, 32, 0.04);
+  }
+
+  .search-page__editorial-image,
+  .search-page__editorial-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .search-page__editorial-image {
+    object-fit: cover;
+  }
+
+  .search-page__editorial-placeholder {
+    background: linear-gradient(135deg, rgba(16, 24, 32, 0.03), rgba(16, 24, 32, 0.08));
+  }
+
+  .search-page__editorial-content {
+    display: grid;
+    gap: 10px;
+  }
+
+  .search-page__result-title {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .search-page__result-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .search-page__result-title a:hover {
+    text-decoration: underline;
+  }
+
+  .search-page__result-excerpt {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .search-page__empty {
+    display: grid;
+    gap: 12px;
+    padding: 28px;
+    border: 1px solid rgba(16, 24, 32, 0.08);
+    border-radius: var(--style-border-radius-theme);
+    background: rgba(16, 24, 32, 0.02);
+  }
+
+  .search-page__pagination {
+    margin-top: 8px;
+  }
+
+  @media (max-width: 989px) {
+    .search-page__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .search-page__form {
+      width: 100%;
+    }
+
+    .search-page__results {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 749px) {
+    .search-page {
+      padding: 32px 0 40px;
+    }
+
+    .search-page__form {
+      grid-template-columns: 1fr;
+    }
+
+    .search-page__results {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.search",
+  "settings": []
+}
+{% endschema %}

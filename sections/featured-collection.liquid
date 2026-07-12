@@ -1,0 +1,459 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --heading-scale: {{ section.settings.heading_font_scale | default: 100 | divided_by: 100.0 }};
+    --body-scale: {{ section.settings.body_font_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+{% liquid
+  assign featured_collection = section.settings.collection
+  assign products_per_row = section.settings.products_per_row | default: 4
+  assign rows = section.settings.rows | default: 1
+  assign products_to_show = products_per_row | times: rows
+  assign view_all_position = section.settings.view_all_position | default: 'header'
+  assign view_all_style = section.settings.view_all_style | default: 'link'
+  assign show_view_all = section.settings.show_view_all
+  assign enable_swipe_on_mobile = section.settings.enable_swipe_on_mobile
+  assign desktop_image_size = 100 | divided_by: products_per_row
+  if enable_swipe_on_mobile
+    assign mobile_image_size = '40vw'
+  else
+    assign mobile_image_size = '50vw'
+  endif
+  assign image_sizes = '(max-width: 749px) ' | append: mobile_image_size | append: ', (max-width: 989px) 50vw, '
+  assign image_sizes = image_sizes | append: desktop_image_size | append: 'vw'
+
+  assign use_recommendations = false
+  if featured_collection == blank or featured_collection.products_count == 0
+    if product != blank
+      assign use_recommendations = true
+    endif
+  endif
+
+  if featured_collection != blank and featured_collection.products_count > 0
+    assign products_list = featured_collection.products
+  else
+    assign products_list = recommendations.products
+  endif
+
+  assign show_placeholders = false
+  if products_list == blank or products_list.size == 0
+    if recommendations.performed == false
+      assign show_placeholders = true
+    endif
+  endif
+%}
+
+{% render 'color-scheme', color_scheme: section.settings.color_scheme, section_id: section.id %}
+<section
+  class="featured-collection-section full-width{% if section.settings.show_section_divider %} featured-collection-section--divider{% endif %}"
+  id="FeaturedCollection-{{ section.id }}"
+  style="--featured-collection-columns: {{ products_per_row }}; --featured-collection-padding-top: 56px; --featured-collection-padding-bottom: 56px; background-color: var(--color-background); color: var(--color-foreground);"
+>
+  <div class="featured-collection-section__inner">
+    {% if section.settings.heading != blank or show_view_all and featured_collection != blank and view_all_position == 'header' %}
+      <div class="featured-collection-section__header">
+        {% if section.settings.heading != blank %}
+          <h2 class="featured-collection-section__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        {% if show_view_all and featured_collection != blank and view_all_position == 'header' %}
+          <a
+            class="featured-collection-section__view-all-link{% if view_all_style == 'primary' %} button button--primary{% elsif view_all_style == 'secondary' %} button button--secondary{% endif %}"
+            href="{{ featured_collection.url }}"
+          >
+            {{ 'general.view_all' | t }}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {%- liquid
+      assign grid_wrapper_classes = 'featured-collection-section__grid-wrapper'
+      if enable_swipe_on_mobile
+        assign grid_wrapper_classes = grid_wrapper_classes | append: ' featured-collection-section__grid-wrapper--mobile-swipe'
+      endif
+    -%}
+    {% if use_recommendations %}
+      <product-recommendations
+        class="{{ grid_wrapper_classes }}"
+        data-recommendations-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ products_to_show }}&intent=related"
+        {% if enable_swipe_on_mobile %}data-swipe-wrapper{% endif %}
+      >
+    {% else %}
+      <div class="{{ grid_wrapper_classes }}"{% if enable_swipe_on_mobile %} data-swipe-wrapper{% endif %}>
+    {% endif %}
+      <div class="featured-collection-section__grid" role="list" {% if enable_swipe_on_mobile %}data-swipe-grid{% endif %}>
+        {% if products_list != blank and products_list.size > 0 %}
+          {% for item in products_list limit: products_to_show %}
+            <div class="featured-collection-section__item" role="listitem">
+              {% render 'grid-item', product: item, sizes: image_sizes %}
+            </div>
+          {% endfor %}
+        {% elsif show_placeholders %}
+          {% for i in (1..products_to_show) %}
+            {% liquid
+              assign placeholder_index = i | modulo: 6
+
+              if placeholder_index == 0
+                assign placeholder_index = 6
+              endif
+            %}
+            <div class="featured-collection-section__item" role="listitem">
+              {% render 'grid-item', placeholder_index: placeholder_index, sizes: image_sizes %}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% if use_recommendations %}
+      </product-recommendations>
+    {% else %}
+      </div>
+    {% endif %}
+
+    {% if show_view_all and featured_collection != blank and view_all_position == 'below' %}
+      <div class="featured-collection-section__footer">
+        <a
+          class="featured-collection-section__view-all-link{% if view_all_style == 'primary' %} button button--primary{% elsif view_all_style == 'secondary' %} button button--secondary{% endif %}"
+          href="{{ featured_collection.url }}"
+        >
+          {{ 'general.view_all' | t }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  if (!customElements.get('product-recommendations')) {
+    customElements.define(
+      'product-recommendations',
+      class ProductRecommendations extends HTMLElement {
+        connectedCallback() {
+          const url = this.dataset.recommendationsUrl;
+          if (!url) return;
+
+          const load = () => {
+            fetch(url)
+              .then((response) => response.text())
+              .then((text) => {
+                const parsed = new DOMParser().parseFromString(text, 'text/html');
+                const incoming = parsed.querySelector('.featured-collection-section__grid');
+                const current = this.querySelector('.featured-collection-section__grid');
+                if (incoming && current && incoming.children.length > 0) {
+                  current.innerHTML = incoming.innerHTML;
+                } else {
+                  const section = this.closest('.featured-collection-section');
+                  if (section) section.hidden = true;
+                }
+              })
+              .catch((error) => {
+                console.error(error);
+                const section = this.closest('.featured-collection-section');
+                if (section) section.hidden = true;
+              });
+          };
+
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+              (entries, obs) => {
+                if (!entries[0].isIntersecting) return;
+                obs.disconnect();
+                load();
+              },
+              { rootMargin: '400px' }
+            );
+            observer.observe(this);
+          } else {
+            load();
+          }
+        }
+      }
+    );
+  }
+</script>
+
+{% stylesheet %}
+  .featured-collection-section {
+    width: 100%;
+    padding: var(--featured-collection-padding-top) 0 var(--featured-collection-padding-bottom);
+  }
+
+  product-recommendations {
+    display: block;
+  }
+
+  .featured-collection-section--divider {
+    border-top: 1px solid var(--colorBorder);
+  }
+
+  .featured-collection-section__inner {
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+  }
+
+  .featured-collection-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .featured-collection-section__heading {
+    margin: 0;
+    min-width: 0;
+    font-size: calc(1.5em * var(--heading-scale, 1));
+  }
+
+  .featured-collection-section__view-all-link {
+    font-size: calc(1em * var(--body-scale, 1));
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .featured-collection-section__view-all-link.button {
+    text-decoration: none;
+  }
+
+  .featured-collection-section__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--featured-collection-columns), minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .featured-collection-section__item {
+    min-width: 0;
+  }
+
+  .featured-collection-section__footer {
+    margin-top: 24px;
+  }
+
+  @media (max-width: 989px) {
+    .featured-collection-section__grid {
+      grid-template-columns: repeat(min(var(--featured-collection-columns), 2), minmax(0, 1fr));
+    }
+  }
+
+  .featured-collection-section__scroll-track {
+    display: none;
+  }
+
+  @media (max-width: 749px) {
+    .featured-collection-section {
+      padding: calc(var(--featured-collection-padding-top) * 0.75) 0 calc(var(--featured-collection-padding-bottom) * 0.75);
+    }
+
+    .featured-collection-section__header {
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .featured-collection-section__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .featured-collection-section__scroll-track {
+      display: block;
+      height: 3px;
+      margin-top: 14px;
+      background: color-mix(in srgb, var(--color-foreground) 12%, transparent);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .featured-collection-section__scroll-fill {
+      height: 100%;
+      background: var(--color-foreground);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    .featured-collection-section__grid-wrapper--mobile-swipe {
+      margin-inline: calc(-1 * var(--page-margin));
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      scroll-padding-inline: var(--page-margin);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .featured-collection-section__grid-wrapper--mobile-swipe::-webkit-scrollbar {
+      display: none;
+    }
+
+    .featured-collection-section__grid-wrapper--mobile-swipe .featured-collection-section__grid {
+      display: flex;
+      gap: 16px;
+      padding-inline: var(--page-margin);
+    }
+
+    .featured-collection-section__grid-wrapper--mobile-swipe .featured-collection-section__item {
+      width: min(38vw, 320px);
+      flex: 0 0 min(38vw, 320px);
+      scroll-snap-align: start;
+    }
+
+    .featured-collection-section__footer {
+      margin-top: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% if enable_swipe_on_mobile %}
+  <script>
+    (function() {
+      var wrapper = document.querySelector('[data-swipe-wrapper]');
+      if (!wrapper) return;
+
+      var pseudo = document.createElement('div');
+      pseudo.className = 'featured-collection-section__scroll-track';
+      pseudo.innerHTML = '<div class="featured-collection-section__scroll-fill"></div>';
+      wrapper.insertAdjacentElement('afterend', pseudo);
+
+      function updateFill() {
+        var fill = pseudo.querySelector('.featured-collection-section__scroll-fill');
+        if (!fill) return;
+        var max = wrapper.scrollWidth - wrapper.clientWidth;
+        var progress = max > 0 ? wrapper.scrollLeft / max : 0;
+        fill.style.width = Math.round(progress * 100) + '%';
+      }
+
+      wrapper.addEventListener('scroll', updateFill, { passive: true });
+      updateFill();
+    })();
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "tag": "section",
+  "class": "section-featured-collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Body font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Products per row",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Rows of products",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_swipe_on_mobile",
+      "label": "Enable swipe on mobile",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' link",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "view_all_position",
+      "label": "View all link next to heading or under collection",
+      "options": [
+        {
+          "value": "header",
+          "label": "Next to heading"
+        },
+        {
+          "value": "below",
+          "label": "Under collection"
+        }
+      ],
+      "default": "header"
+    },
+    {
+      "type": "select",
+      "id": "view_all_style",
+      "label": "View all style",
+      "options": [
+        {
+          "value": "link",
+          "label": "Inline link"
+        },
+        {
+          "value": "primary",
+          "label": "Primary button"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary button"
+        }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_divider",
+      "label": "Show section divider",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

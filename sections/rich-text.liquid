@@ -1,0 +1,367 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --heading-scale: {{ section.settings.heading_font_scale | default: 100 | divided_by: 100.0 }};
+    --body-scale: {{ section.settings.body_font_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+{% if section.blocks.size > 0 %}
+  {% assign text_align = section.settings.text_align | default: 'left' %}
+  {% render 'color-scheme', color_scheme: section.settings.color_scheme, section_id: section.id %}
+  <section
+    class="rich-text-section rich-text-section--align-{{ text_align }} full-width"
+    id="RichText-{{ section.id }}"
+    style="
+      --rich-text-gap: {{ section.settings.gap }}px;
+      --rich-text-align: {{ text_align }};
+      --rich-text-padding-top: {{ section.settings.padding_top | default: 56 }}px;
+      --rich-text-padding-bottom: {{ section.settings.padding_bottom | default: 56 }}px;
+      background-color: var(--color-background);
+      color: var(--color-foreground);
+    "
+  >
+    <div class="rich-text-section__inner">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'heading' %}
+            {% if block.settings.text != blank %}
+              <h2 class="rich-text-section__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+            {% endif %}
+          {% when 'text' %}
+            {% if block.settings.text != blank %}
+              <div class="rich-text-section__text rte" {{ block.shopify_attributes }}>
+                {{ block.settings.text }}
+              </div>
+            {% endif %}
+          {% when 'image' %}
+            {% if block.settings.image != blank %}
+              {% assign image_width = block.settings.image_width | default: 'contained' %}
+              <div
+                class="rich-text-section__image-block rich-text-section__image-block--{{ image_width }}"
+                {{ block.shopify_attributes }}
+              >
+                {{
+                  block.settings.image
+                  | image_url: width: 2400
+                  | image_tag:
+                    class: 'rich-text-section__image',
+                    widths: '360, 540, 720, 900, 1200, 1600, 2000, 2400',
+                    sizes: '(min-width: 750px) 100vw, 100vw',
+                    loading: 'lazy',
+                    alt: block.settings.image.alt
+                }}
+              </div>
+            {% endif %}
+          {% when 'button' %}
+            {% if block.settings.label != blank and block.settings.link != blank %}
+              <a
+                class="rich-text-section__button button button--{{ block.settings.style | default: 'primary' }}"
+                href="{{ block.settings.link }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.label }}
+              </a>
+            {% endif %}
+          {% when 'html' %}
+            {% if block.settings.html != blank %}
+              <div class="rich-text-section__html" {{ block.shopify_attributes }}>
+                {{ block.settings.html }}
+              </div>
+            {% endif %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .rich-text-section {
+    padding: var(--rich-text-padding-top) 0 var(--rich-text-padding-bottom);
+  }
+
+  .rich-text-section__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--rich-text-gap);
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+    text-align: var(--rich-text-align);
+  }
+
+  .rich-text-section__heading {
+    margin: 0;
+    font-size: calc(1.5em * var(--heading-scale, 1));
+  }
+
+  .rich-text-section__text {
+    max-width: 65ch;
+    font-size: calc(1em * var(--body-scale, 1));
+  }
+
+  .rich-text-section__button {
+    max-width: 100%;
+  }
+
+  .rich-text-section__image-block {
+    width: 100%;
+  }
+
+  .rich-text-section__image-block--full {
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  .rich-text-section__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--style-border-radius-theme);
+  }
+
+  .rich-text-section__image-block--full .rich-text-section__image {
+    border-radius: 0;
+  }
+
+  .rich-text-section__html {
+    width: 100%;
+  }
+
+  .rich-text-section--align-center .rich-text-section__inner {
+    align-items: center;
+  }
+
+  .rich-text-section--align-right .rich-text-section__inner {
+    align-items: flex-end;
+  }
+
+  /* Restore paragraph spacing (enters) stripped by the global margin reset */
+  .rich-text-section__text p {
+    margin: 0 0 1em;
+  }
+
+  /* Render blank lines instead of hiding them (overrides global p:empty) */
+  .rich-text-section__text p:empty {
+    display: block;
+    min-height: 1em;
+  }
+
+  .rich-text-section__text > *:first-child {
+    margin-top: 0;
+  }
+
+  .rich-text-section__text > *:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 749px) {
+    .rich-text-section {
+      padding: calc(var(--rich-text-padding-top) * 0.75) 0 calc(var(--rich-text-padding-bottom) * 0.75);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Rich text",
+  "tag": "section",
+  "class": "section-rich-text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Body font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 64,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Heading",
+          "default": "Rich text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Add a short paragraph here to share details about your brand, products, or promotion.</p>"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            }
+          ],
+          "default": "primary"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "contained",
+              "label": "Contained"
+            },
+            {
+              "value": "full",
+              "label": "Full width"
+            }
+          ],
+          "default": "contained"
+        }
+      ]
+    },
+    {
+      "type": "html",
+      "name": "HTML",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "html",
+          "label": "HTML",
+          "default": "<div>Custom HTML</div>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich text",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

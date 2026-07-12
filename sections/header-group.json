@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:general.header",
+  "sections": {
+    "announcement_bar_2": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_HipNJi": {
+          "type": "announcement",
+          "settings": {
+            "text": "Free shipping across the US!",
+            "link": ""
+          }
+        },
+        "announcement_tqxndY": {
+          "type": "announcement",
+          "settings": {
+            "text": "Anniversary sale ends today!",
+            "link": ""
+          }
+        },
+        "announcement_N3w8ef": {
+          "type": "announcement",
+          "settings": {
+            "text": "30-day money back guarantee!",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_HipNJi",
+        "announcement_tqxndY",
+        "announcement_N3w8ef"
+      ],
+      "custom_css": [
+        "p.announcement-bar__text {font-weight: 700;}"
+      ],
+      "settings": {
+        "display_mode": "slider",
+        "autoplay": true,
+        "autoplay_interval": 4,
+        "scroll_speed": 25,
+        "color_scheme": "scheme-3",
+        "font_preset": "heading",
+        "font_size_desktop": 14,
+        "font_size_mobile": 12,
+        "alignment": "center"
+      }
+    },
+    "header": {
+      "type": "header",
+      "custom_css": [
+        ".visually-hidden {display: none;}"
+      ],
+      "settings": {
+        "logo_width": 160,
+        "menu": "main-menu",
+        "enable_dropdown_hover": true,
+        "show_mega_menu_images": false,
+        "header_layout": "logo-center-menu-below",
+        "header_style": "sticky",
+        "overlay_homepage": false,
+        "overlay_collection": false,
+        "show_language_selector": false,
+        "show_currency_selector": false,
+        "show_currency_flags": false,
+        "show_account_icon": true,
+        "show_search_icon": true,
+        "mobile_menu_title": "Menu",
+        "customer_account_menu": "customer-account-main-menu"
+      }
+    }
+  },
+  "order": [
+    "announcement_bar_2",
+    "header"
+  ]
+}

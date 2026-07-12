@@ -1,0 +1,323 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --heading-scale: {{ section.settings.heading_font_scale | default: 100 | divided_by: 100.0 }};
+    --body-scale: {{ section.settings.body_font_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+{% render 'color-scheme', color_scheme: section.settings.color_scheme, section_id: section.id %}
+
+<faq-section
+  class="faq-section full-width"
+  id="FAQ-{{ section.id }}"
+  style="
+    --faq-padding-top: 56px;
+    --faq-padding-bottom: 56px;
+    --faq-content-width: {{ section.settings.content_width }}px;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  "
+>
+  <div class="faq-section__inner">
+
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <header class="faq-section__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="faq-section__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="faq-section__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </header>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {% for block in section.blocks %}
+              {
+                "@type": "Question",
+                "name": {{ block.settings.question | json }},
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": {{ block.settings.answer | strip_html | json }}
+                }
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }
+      </script>
+
+      <div class="faq-section__list">
+        {%- for block in section.blocks -%}
+          <details class="faq-item" {{ block.shopify_attributes }}>
+            <summary class="faq-item__question">
+              <span class="faq-item__question-text">{{ block.settings.question | escape }}</span>
+              <span class="faq-item__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </summary>
+            <div class="faq-item__body">
+              <div class="faq-item__answer rte">
+                {{ block.settings.answer }}
+              </div>
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
+
+    {%- else -%}
+      <p class="faq-section__empty">Add FAQ blocks in the theme editor to get started.</p>
+    {%- endif -%}
+
+  </div>
+</faq-section>
+
+{% stylesheet %}
+  .faq-section {
+    padding: var(--faq-padding-top) 0 var(--faq-padding-bottom);
+  }
+
+  .faq-section__inner {
+    width: min(var(--faq-content-width, 52rem), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .faq-section__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .faq-section__heading {
+    margin: 0;
+    font-size: calc(1.5em * var(--heading-scale, 1));
+  }
+
+  .faq-section__subheading {
+    margin: 0;
+    opacity: 0.72;
+    max-width: 55ch;
+    font-size: calc(1em * var(--body-scale, 1));
+  }
+
+  .faq-section__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-item {
+    border-top: 1px solid rgba(15, 23, 42, 0.1);
+  }
+
+  .faq-item:last-child {
+    border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  }
+
+  .faq-item__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    line-height: 1.4;
+    font-size: calc(1em * var(--body-scale, 1));
+  }
+
+  .faq-item__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item__question-text {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .faq-item__icon {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform 0.25s ease;
+    color: inherit;
+    opacity: 0.6;
+  }
+
+  .faq-item__icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .faq-item[open] > .faq-item__question .faq-item__icon {
+    transform: rotate(180deg);
+  }
+
+  /* Smooth open/close using CSS grid trick — no JS required */
+  .faq-item__body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+
+  .faq-item[open] > .faq-item__body {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-item__answer {
+    overflow: hidden;
+    padding-bottom: 0;
+    transition: padding-bottom 0.3s ease;
+    font-size: calc(1em * var(--body-scale, 1));
+  }
+
+  .faq-item[open] > .faq-item__body > .faq-item__answer {
+    padding-bottom: 1.25rem;
+  }
+
+  .faq-item__answer > *:first-child {
+    margin-top: 0;
+  }
+
+  .faq-item__answer > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .faq-section__empty {
+    margin: 0;
+    opacity: 0.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .faq-section {
+      padding: calc(var(--faq-padding-top) * 0.75) 0 calc(var(--faq-padding-bottom) * 0.75);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class FaqSection extends HTMLElement {
+    connectedCallback() {
+      this._items = Array.from(this.querySelectorAll('details.faq-item'));
+      this._items.forEach((item) => {
+        item.addEventListener('toggle', () => {
+          if (item.open) {
+            this._items.forEach((other) => {
+              if (other !== item) other.removeAttribute('open');
+            });
+          }
+        });
+      });
+    }
+  }
+
+  if (!customElements.get('faq-section')) {
+    customElements.define('faq-section', FaqSection);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "tag": "section",
+  "class": "section-faq",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Body font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "label": "Content width",
+      "min": 400,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "default": 840,
+      "info": "Maximum width of the FAQ list"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Frequently asked question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Use this text to answer questions in as much detail as possible for your customers.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question" },
+        { "type": "question" },
+        { "type": "question" }
+      ]
+    }
+  ]
+}
+{% endschema %}

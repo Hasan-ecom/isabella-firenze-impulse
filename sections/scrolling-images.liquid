@@ -1,0 +1,519 @@
+{% comment %}
+  Scrolling images — an auto-scrolling marquee of images (logos, press, lifestyle).
+  Seamless loop via two duplicated sets; respects reduced-motion.
+{% endcomment %}
+
+{%- liquid
+  assign direction = section.settings.direction | default: 'left'
+  assign retina_width = section.settings.image_width_desktop | times: 2
+
+  assign heading_scale = section.settings.heading_font_scale | default: 100 | divided_by: 100.0
+  assign body_scale = section.settings.body_font_scale | default: 100 | divided_by: 100.0
+
+  assign image_sizes = '(min-width: 990px) ' | append: section.settings.image_width_desktop | append: 'px, ' | append: section.settings.image_width_mobile | append: 'px'
+-%}
+
+{% render 'color-scheme', color_scheme: section.settings.color_scheme, section_id: section.id %}
+
+{%- capture marquee_items -%}
+  {%- for block in section.blocks -%}
+    {%- if block.settings.url != blank -%}
+      <a href="{{ block.settings.url }}" class="scrolling-images__item" {{ block.shopify_attributes }}>
+    {%- else -%}
+      <div class="scrolling-images__item" {{ block.shopify_attributes }}>
+    {%- endif -%}
+      {%- if block.settings.image != blank -%}
+        {{
+          block.settings.image
+          | image_url: width: retina_width
+          | image_tag:
+            loading: 'lazy',
+            widths: '160, 240, 320, 480, 640, 800, 1200, 1600',
+            sizes: image_sizes,
+            class: 'scrolling-images__img',
+            alt: block.settings.image.alt
+        }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'scrolling-images__img scrolling-images__img--placeholder' }}
+      {%- endif -%}
+    {%- if block.settings.url != blank -%}</a>{%- else -%}</div>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="scrolling-images full-width{% if direction == 'right' %} scrolling-images--reverse{% endif %}{% if section.settings.grayscale %} scrolling-images--grayscale{% endif %}{% if section.settings.pause_on_hover %} scrolling-images--pause{% endif %}{% if section.settings.show_section_divider %} scrolling-images--divider{% endif %}"
+  id="ScrollingImages-{{ section.id }}"
+  style="
+    --si-gap-desktop: {{ section.settings.gap_desktop }}px;
+    --si-gap-mobile: {{ section.settings.gap_mobile }}px;
+    --si-img-w-desktop: {{ section.settings.image_width_desktop }}px;
+    --si-img-w-mobile: {{ section.settings.image_width_mobile }}px;
+    --si-img-h-desktop: {{ section.settings.image_height_desktop }}px;
+    --si-img-h-mobile: {{ section.settings.image_height_mobile }}px;
+    --si-radius: {{ section.settings.image_radius }}px;
+    --si-duration: {{ section.settings.duration }}s;
+    --si-pad-top: {{ section.settings.padding_top }}px;
+    --si-pad-bottom: {{ section.settings.padding_bottom }}px;
+    --si-content-max: {{ section.settings.content_max_width }}px;
+    --si-content-overlap: {{ section.settings.content_overlap }}px;
+    --heading-scale: {{ heading_scale }};
+    --body-scale: {{ body_scale }};
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  "
+>
+  {%- if section.settings.heading != blank -%}
+    <div class="scrolling-images__header">
+      <h2 class="scrolling-images__heading">{{ section.settings.heading }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="scrolling-images__marquee">
+    <div class="scrolling-images__track">
+      <div class="scrolling-images__set">{{ marquee_items }}</div>
+      <div class="scrolling-images__set" aria-hidden="true">{{ marquee_items }}</div>
+    </div>
+  </div>
+
+  {%- if section.settings.show_content and section.settings.content != blank -%}
+    <div class="scrolling-images__content-wrap">
+      <div class="scrolling-images__content scrolling-images__content--{{ section.settings.content_position }}{% if section.settings.content_shadow %} scrolling-images__content--shadow{% endif %}">
+        <div class="scrolling-images__content-inner rte">{{ section.settings.content }}</div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .scrolling-images {
+    width: 100%;
+    padding-block: var(--si-pad-top, 56px) var(--si-pad-bottom, 56px);
+    --si-gap: var(--si-gap-mobile, 16px);
+    --si-img-w: var(--si-img-w-mobile, 160px);
+    --si-img-h: var(--si-img-h-mobile, 220px);
+  }
+
+  .scrolling-images--divider {
+    border-top: 1px solid var(--colorBorder);
+  }
+
+  .scrolling-images__header {
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto 28px;
+  }
+
+  .scrolling-images__heading {
+    margin: 0;
+    text-align: center;
+    font-size: calc(clamp(1.5rem, 3vw, 2.25rem) * var(--heading-scale, 1));
+  }
+
+  .scrolling-images__marquee {
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+
+  .scrolling-images__track {
+    display: flex;
+    align-items: center;
+    gap: var(--si-gap);
+    width: max-content;
+    animation: scrolling-images-marquee var(--si-duration, 40s) linear infinite;
+  }
+
+  .scrolling-images--reverse .scrolling-images__track {
+    animation-direction: reverse;
+  }
+
+  .scrolling-images--pause .scrolling-images__marquee:hover .scrolling-images__track {
+    animation-play-state: paused;
+  }
+
+  .scrolling-images__set {
+    display: flex;
+    align-items: center;
+    gap: var(--si-gap);
+    flex: 0 0 auto;
+  }
+
+  .scrolling-images__item {
+    flex: 0 0 var(--si-img-w);
+    width: var(--si-img-w);
+    height: var(--si-img-h);
+    display: block;
+  }
+
+  .scrolling-images__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--si-radius, 12px);
+  }
+
+  .scrolling-images__img--placeholder {
+    background: color-mix(in srgb, var(--color-foreground) 8%, transparent);
+    fill: color-mix(in srgb, var(--color-foreground) 24%, transparent);
+  }
+
+  .scrolling-images--grayscale .scrolling-images__img {
+    filter: grayscale(1);
+    transition: filter 0.3s ease;
+  }
+
+  .scrolling-images--grayscale .scrolling-images__item:hover .scrolling-images__img {
+    filter: grayscale(0);
+  }
+
+  .scrolling-images__content-wrap {
+    position: relative;
+    z-index: 3;
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+    display: flex;
+  }
+
+  .scrolling-images__content {
+    width: min(var(--si-content-max, 360px), 100%);
+    margin-top: calc(-1 * var(--si-content-overlap, 40px));
+    padding: clamp(20px, 3vw, 32px);
+    background: var(--color-background);
+    border: 1px solid var(--colorBorder);
+    border-radius: var(--style-border-radius-theme);
+    text-align: center;
+  }
+
+  .scrolling-images__content--shadow {
+    box-shadow: 0 18px 40px color-mix(in srgb, var(--color-foreground) 14%, transparent);
+  }
+
+  .scrolling-images__content--left {
+    margin-right: auto;
+  }
+
+  .scrolling-images__content--center {
+    margin-inline: auto;
+  }
+
+  .scrolling-images__content--right {
+    margin-left: auto;
+  }
+
+  .scrolling-images__content-inner {
+    font-size: calc(1em * var(--body-scale, 1));
+  }
+
+  .scrolling-images__content-inner > *:first-child {
+    margin-top: 0;
+  }
+
+  .scrolling-images__content-inner > *:last-child {
+    margin-bottom: 0;
+  }
+
+  @keyframes scrolling-images-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-50% - var(--si-gap) / 2));
+    }
+  }
+
+  @media (min-width: 990px) {
+    .scrolling-images {
+      --si-gap: var(--si-gap-desktop, 24px);
+      --si-img-w: var(--si-img-w-desktop, 300px);
+      --si-img-h: var(--si-img-h-desktop, 380px);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .scrolling-images {
+      padding-block: calc(var(--si-pad-top, 56px) * 0.75) calc(var(--si-pad-bottom, 56px) * 0.75);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scrolling-images__track {
+      animation: none;
+    }
+
+    .scrolling-images__marquee {
+      overflow-x: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Scrolling images",
+  "tag": "section",
+  "class": "section-scrolling-images",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Leave blank to hide."
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Marquee"
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Seconds per loop",
+      "info": "Lower is faster.",
+      "min": 10,
+      "max": 120,
+      "step": 2,
+      "unit": "s",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "label": "Gap between images",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Gap between images (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "range",
+      "id": "image_width_desktop",
+      "label": "Image width",
+      "min": 80,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "image_width_mobile",
+      "label": "Image width (mobile)",
+      "min": 60,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "image_height_desktop",
+      "label": "Image height",
+      "min": 80,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "default": 380
+    },
+    {
+      "type": "range",
+      "id": "image_height_mobile",
+      "label": "Image height (mobile)",
+      "min": 60,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 220
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "label": "Image corner radius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "grayscale",
+      "label": "Grayscale (color on hover)",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Content card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_content",
+      "label": "Show content card",
+      "default": false
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Loved by 29,000+ customers</p>"
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Content font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content width",
+      "min": 200,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "default": 360
+    },
+    {
+      "type": "range",
+      "id": "content_overlap",
+      "label": "Overlap onto images",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "content_shadow",
+      "label": "Content shadow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_divider",
+      "label": "Show top divider",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top spacing",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link",
+          "info": "Optional"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling images",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

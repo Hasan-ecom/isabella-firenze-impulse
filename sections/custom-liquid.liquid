@@ -1,0 +1,50 @@
+{% if section.settings.custom_liquid != blank %}
+  <div class="custom-liquid-section {% if section.settings.full_width %}full-width{% endif %}">
+    <div class="custom-liquid-section__inner">
+      {{ section.settings.custom_liquid }}
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .custom-liquid-section {
+    padding-block: 24px;
+  }
+
+  .custom-liquid-section__inner {
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+  }
+
+  .custom-liquid-section.full-width .custom-liquid-section__inner {
+    width: 100%;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom liquid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": false
+    },
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom liquid"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "presets": [
+    {
+      "name": "Custom liquid"
+    }
+  ]
+}
+{% endschema %}

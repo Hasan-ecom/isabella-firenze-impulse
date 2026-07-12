@@ -1,0 +1,830 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --heading-scale: {{ section.settings.heading_font_scale | default: 100 | divided_by: 100.0 }};
+    --body-scale: {{ section.settings.body_font_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+{% liquid
+  assign desktop_height = section.settings.desktop_height | default: 700
+  assign mobile_height = section.settings.mobile_height | default: 480
+  assign autoplay = section.settings.auto_change_slides
+  assign autoplay_speed = section.settings.change_images_every | times: 1000
+  assign lazy_load_images = section.settings.lazy_load_images
+  assign enable_parallax = section.settings.enable_parallax
+  assign section_identifier = 'Hero-' | append: section.id
+
+  assign desktop_vertical = section.settings.desktop_text_vertical | default: 'center'
+  assign desktop_horizontal = section.settings.desktop_text_horizontal | default: 'left'
+  assign mobile_vertical = section.settings.mobile_text_vertical | default: 'end'
+  assign mobile_horizontal = section.settings.mobile_text_horizontal | default: 'left'
+
+  assign desktop_heading_size = section.settings.desktop_heading_size | default: 88
+  assign desktop_body_size = section.settings.desktop_body_size | default: 17
+  assign mobile_heading_size = section.settings.mobile_heading_size | default: 48
+  assign mobile_body_size = section.settings.mobile_body_size | default: 15
+
+  assign desktop_natural = section.settings.desktop_natural_height
+  assign mobile_natural = section.settings.mobile_natural_height
+
+  assign first_block = section.blocks.first
+  assign desktop_aspect_padding = nil
+  assign mobile_aspect_padding = nil
+
+  if first_block != nil
+    if desktop_natural
+      assign _desktop_img = first_block.settings.image
+      if _desktop_img != blank
+        assign desktop_aspect_padding = _desktop_img.height | times: 100.0 | divided_by: _desktop_img.width
+      endif
+    endif
+    if mobile_natural
+      assign _mobile_img = first_block.settings.mobile_image
+      if _mobile_img == blank
+        assign _mobile_img = first_block.settings.image
+      endif
+      if _mobile_img != blank
+        assign mobile_aspect_padding = _mobile_img.height | times: 100.0 | divided_by: _mobile_img.width
+      endif
+    endif
+  endif
+%}
+
+<section
+  class="hero-section full-width{% if desktop_natural %} hero-section--desktop-natural{% endif %}{% if mobile_natural %} hero-section--mobile-natural{% endif %}"
+  id="{{ section_identifier }}"
+  data-section-id="{{ section.id }}"
+  data-autoplay="{{ autoplay }}"
+  data-autoplay-speed="{{ autoplay_speed }}"
+  data-parallax="{{ enable_parallax }}"
+  style="
+    --hero-desktop-height: {{ desktop_height }}px;
+    --hero-mobile-height: {{ mobile_height }}px;
+    --hero-desktop-content-justify: {{ desktop_vertical }};
+    --hero-desktop-content-align: {{ desktop_horizontal }};
+    --hero-mobile-content-justify: {{ mobile_vertical }};
+    --hero-mobile-content-align: {{ mobile_horizontal }};
+    --hero-desktop-heading-size: {{ desktop_heading_size }}px;
+    --hero-desktop-body-size: {{ desktop_body_size }}px;
+    --hero-mobile-heading-size: {{ mobile_heading_size }}px;
+    --hero-mobile-body-size: {{ mobile_body_size }}px;
+    {% if desktop_aspect_padding %}--hero-desktop-aspect-padding: {{ desktop_aspect_padding }}%;{% endif %}
+    {% if mobile_aspect_padding %}--hero-mobile-aspect-padding: {{ mobile_aspect_padding }}%;{% endif %}
+  "
+>
+  <div class="hero-section__viewport">
+    <div class="hero-section__slides" data-hero-slides>
+      {% for block in section.blocks %}
+        {% liquid
+          assign image = block.settings.image
+          assign mobile_image = block.settings.mobile_image | default: image
+          assign is_first = false
+          if forloop.first
+            assign is_first = true
+          endif
+
+          assign image_loading = 'lazy'
+          if is_first and lazy_load_images == false
+            assign image_loading = 'eager'
+          endif
+
+          assign fetch_priority = 'auto'
+          if is_first and lazy_load_images == false
+            assign fetch_priority = 'high'
+          endif
+        %}
+
+        <article
+          class="hero-slide{% if forloop.first %} is-active{% endif %}"
+          {{ block.shopify_attributes }}
+          data-hero-slide
+          id="Slide-{{ block.id }}"
+        >
+          <div class="hero-slide__media{% if enable_parallax %} hero-slide__media--parallax{% endif %}" data-hero-media>
+            {% if image != blank %}
+              {{
+                image
+                | image_url: width: 2400
+                | image_tag:
+                  class: 'hero-slide__image hero-slide__image--desktop',
+                  widths: '768, 1200, 1600, 2000, 2400',
+                  sizes: '100vw',
+                  loading: image_loading,
+                  fetchpriority: fetch_priority
+              }}
+            {% else %}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'hero-slide__image hero-slide__image--desktop hero-slide__image--placeholder' }}
+            {% endif %}
+
+            {% if mobile_image != blank %}
+              {{
+                mobile_image
+                | image_url: width: 1600
+                | image_tag:
+                  class: 'hero-slide__image hero-slide__image--mobile',
+                  widths: '375, 550, 750, 1100, 1600',
+                  sizes: '100vw',
+                  loading: image_loading,
+                  fetchpriority: fetch_priority
+              }}
+            {% elsif image == blank %}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'hero-slide__image hero-slide__image--mobile hero-slide__image--placeholder' }}
+            {% endif %}
+          </div>
+
+          <div class="hero-slide__overlay"></div>
+
+          <div class="hero-slide__content-wrapper">
+            <div class="hero-slide__content">
+              {% if block.settings.eyebrow != blank %}
+                <p class="hero-slide__eyebrow">{{ block.settings.eyebrow }}</p>
+              {% endif %}
+
+              {% if block.settings.heading != blank %}
+                <h2 class="hero-slide__heading">{{ block.settings.heading }}</h2>
+              {% endif %}
+
+              {% if block.settings.text != blank %}
+                <div class="hero-slide__text rte">{{ block.settings.text }}</div>
+              {% endif %}
+
+              {% if block.settings.button_label != blank and block.settings.button_link != blank %}
+                <a
+                  class="hero-slide__button button button--{{ block.settings.button_style | default: 'primary' }}"
+                  href="{{ block.settings.button_link }}"
+                >
+                  {{ block.settings.button_label }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    {% if section.blocks.size > 1 %}
+      <div class="hero-section__controls">
+        <button class="hero-section__arrow" type="button" aria-label="{{ 'sections.hero.previous_slide' | t }}" data-hero-prev>
+          <span aria-hidden="true">&larr;</span>
+        </button>
+
+        <div class="hero-section__dots" aria-label="{{ 'sections.hero.slide_pagination' | t }}">
+          {% for block in section.blocks %}
+            <button
+              class="hero-section__dot{% if forloop.first %} is-active{% endif %}"
+              type="button"
+              aria-label="{{ 'sections.hero.go_to_slide' | t: index: forloop.index }}"
+              aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+              data-hero-dot
+            ></button>
+          {% endfor %}
+        </div>
+
+        <button class="hero-section__arrow" type="button" aria-label="{{ 'sections.hero.next_slide' | t }}" data-hero-next>
+          <span aria-hidden="true">&rarr;</span>
+        </button>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .hero-section {
+    position: relative;
+    width: 100%;
+    color: #ffffff;
+    background: #101820;
+  }
+
+  .hero-section__viewport {
+    position: relative;
+    min-height: var(--hero-desktop-height);
+    overflow: hidden;
+  }
+
+  .hero-section__slides,
+  .hero-slide {
+    min-height: var(--hero-desktop-height);
+  }
+
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+  }
+
+  .hero-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .hero-slide__media,
+  .hero-slide__overlay,
+  .hero-slide__content-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-slide__media {
+    overflow: hidden;
+    transform: scale(1.02);
+    will-change: transform;
+  }
+
+  .hero-slide__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-slide__image--mobile {
+    display: none;
+  }
+
+  .hero-slide__image--placeholder {
+    background: linear-gradient(135deg, #1c3144, #4b7bec);
+    fill: rgba(255, 255, 255, 0.25);
+  }
+
+  .hero-slide__overlay {
+    background: linear-gradient(90deg, rgba(8, 13, 18, 0.42) 0%, rgba(8, 13, 18, 0.32) 45%, rgba(8, 13, 18, 0.2) 100%);
+  }
+
+  .hero-slide__content-wrapper {
+    display: grid;
+    grid-template-columns: var(--content-grid);
+    align-items: var(--hero-desktop-content-justify);
+    z-index: 1;
+  }
+
+  .hero-slide__content {
+    grid-column: 2;
+    width: min(100%, 700px);
+    padding: 48px 24px;
+    justify-self: var(--hero-desktop-content-align);
+    text-align: var(--hero-desktop-content-align);
+  }
+
+  .hero-slide__eyebrow {
+    margin: 0 0 12px;
+    font-size: calc(0.85rem * var(--body-scale, 1));
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.9;
+  }
+
+  .hero-slide__heading {
+    margin: 0;
+    font-size: calc(var(--hero-desktop-heading-size) * var(--heading-scale, 1));
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  .hero-slide__text {
+    margin-top: 20px;
+    font-size: calc(var(--hero-desktop-body-size) * var(--body-scale, 1));
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 56ch;
+  }
+
+  .hero-slide__button {
+    margin-top: 28px;
+  }
+
+  .hero-section__controls {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-section__arrow,
+  .hero-section__dot {
+    border: 0;
+    cursor: pointer;
+  }
+
+  .hero-section__arrow:focus-visible,
+  .hero-section__dot:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .hero-section__arrow {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    backdrop-filter: blur(16px);
+  }
+
+  .hero-section__dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+  }
+
+  .hero-section__dot {
+    width: 11px;
+    height: 11px;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .hero-section__dot.is-active {
+    background: #ffffff;
+  }
+
+  /* Desktop natural image height */
+  @media (min-width: 750px) {
+    .hero-section--desktop-natural .hero-section__viewport {
+      min-height: 0;
+      padding-top: var(--hero-desktop-aspect-padding, 56.25%);
+    }
+
+    .hero-section--desktop-natural .hero-section__slides,
+    .hero-section--desktop-natural .hero-slide {
+      min-height: 0;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .hero-section__viewport,
+    .hero-section__slides,
+    .hero-slide {
+      min-height: var(--hero-mobile-height);
+    }
+
+    .hero-slide__image--desktop {
+      display: none;
+    }
+
+    .hero-slide__image--mobile {
+      display: block;
+    }
+
+    .hero-slide__overlay {
+      background: linear-gradient(180deg, rgba(8, 13, 18, 0.25) 0%, rgba(8, 13, 18, 0.32) 100%);
+    }
+
+    .hero-slide__content {
+      width: 100%;
+      padding: 32px 20px;
+      justify-self: var(--hero-mobile-content-align);
+      text-align: var(--hero-mobile-content-align);
+    }
+
+    .hero-slide__heading {
+      font-size: calc(var(--hero-mobile-heading-size) * var(--heading-scale, 1));
+    }
+
+    .hero-slide__text {
+      font-size: calc(var(--hero-mobile-body-size) * var(--body-scale, 1));
+    }
+
+    .hero-section__controls {
+      right: 20px;
+      left: 20px;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .hero-slide__content-wrapper {
+      align-items: var(--hero-mobile-content-justify);
+    }
+
+    /* Mobile natural image height */
+    .hero-section--mobile-natural .hero-section__viewport {
+      min-height: 0;
+      padding-top: var(--hero-mobile-aspect-padding, 177.78%);
+    }
+
+    .hero-section--mobile-natural .hero-section__slides,
+    .hero-section--mobile-natural .hero-slide {
+      min-height: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const section = document.currentScript?.closest('.shopify-section')?.querySelector('.hero-section');
+
+    if (!section) return;
+
+    const slides = Array.from(section.querySelectorAll('[data-hero-slide]'));
+    const dots = Array.from(section.querySelectorAll('[data-hero-dot]'));
+    const prevButton = section.querySelector('[data-hero-prev]');
+    const nextButton = section.querySelector('[data-hero-next]');
+    const autoplay = section.dataset.autoplay === 'true';
+    const autoplaySpeed = Number(section.dataset.autoplaySpeed) || 5000;
+    const parallaxEnabled = section.dataset.parallax === 'true';
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mediaItems = Array.from(section.querySelectorAll('[data-hero-media]'));
+    let activeIndex = slides.findIndex((slide) => slide.classList.contains('is-active'));
+    let autoplayTimer = null;
+
+    if (activeIndex < 0) activeIndex = 0;
+
+    const updateSlides = (index) => {
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === index;
+        slide.classList.toggle('is-active', isActive);
+      });
+
+      dots.forEach((dot, dotIndex) => {
+        const isActive = dotIndex === index;
+        dot.classList.toggle('is-active', isActive);
+        dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+      });
+
+      activeIndex = index;
+    };
+
+    const goToSlide = (index) => {
+      const normalizedIndex = (index + slides.length) % slides.length;
+      updateSlides(normalizedIndex);
+    };
+
+    const startAutoplay = () => {
+      if (!autoplay || prefersReducedMotion || slides.length < 2) return;
+      window.clearInterval(autoplayTimer);
+      autoplayTimer = window.setInterval(() => {
+        goToSlide(activeIndex + 1);
+      }, autoplaySpeed);
+    };
+
+    const stopAutoplay = () => {
+      window.clearInterval(autoplayTimer);
+    };
+
+    prevButton?.addEventListener('click', () => {
+      goToSlide(activeIndex - 1);
+      startAutoplay();
+    });
+
+    nextButton?.addEventListener('click', () => {
+      goToSlide(activeIndex + 1);
+      startAutoplay();
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        goToSlide(index);
+        startAutoplay();
+      });
+    });
+
+    section.addEventListener('mouseenter', stopAutoplay);
+    section.addEventListener('mouseleave', startAutoplay);
+
+    if (parallaxEnabled && !prefersReducedMotion) {
+      let ticking = false;
+
+      const updateParallax = () => {
+        const rect = section.getBoundingClientRect();
+        const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+        const translateY = (progress - 0.5) * 40;
+
+        mediaItems.forEach((media) => {
+          media.style.transform = `translate3d(0, ${translateY}px, 0) scale(1.08)`;
+        });
+
+        ticking = false;
+      };
+
+      const requestParallaxUpdate = () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateParallax);
+      };
+
+      updateParallax();
+      document.addEventListener('scroll', requestParallaxUpdate, { passive: true });
+      window.addEventListener('resize', requestParallaxUpdate);
+    }
+
+    updateSlides(activeIndex);
+    startAutoplay();
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Body font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Shared settings"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 400,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 280,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Enable parallax",
+      "default": false,
+      "info": "Parallax scrolling is automatically disabled on mobile. Enabling it on desktop may cause visual glitches on some Safari versions."
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_change_slides",
+      "label": "Auto-change slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "change_images_every",
+      "label": "Change images every",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "lazy_load_images",
+      "label": "Lazy load images",
+      "info": "Lazy loading should be enabled when section images are below the fold. Learn more",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Desktop settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_natural_height",
+      "label": "Fit height to image",
+      "default": false,
+      "info": "The section height follows the first slide's image proportions. The height slider above is ignored when this is enabled."
+    },
+    {
+      "type": "select",
+      "id": "desktop_text_vertical",
+      "label": "Desktop text vertical position",
+      "options": [
+        {
+          "value": "start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Middle"
+        },
+        {
+          "value": "end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "desktop_text_horizontal",
+      "label": "Desktop text horizontal position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "desktop_heading_size",
+      "label": "Desktop heading font size",
+      "min": 32,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "desktop_body_size",
+      "label": "Desktop text font size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 17
+    },
+    {
+      "type": "header",
+      "content": "Mobile settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_natural_height",
+      "label": "Fit height to image",
+      "default": false,
+      "info": "Uses the mobile image proportions (or desktop image if no mobile image is set). The height slider above is ignored when this is enabled."
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_vertical",
+      "label": "Mobile text vertical position",
+      "options": [
+        {
+          "value": "start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Middle"
+        },
+        {
+          "value": "end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "end"
+    },
+    {
+      "type": "select",
+      "id": "mobile_text_horizontal",
+      "label": "Mobile text horizontal position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile heading font size",
+      "min": 20,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "mobile_body_size",
+      "label": "Mobile text font size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile image"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow",
+          "default": "Fresh arrivals"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Bold hero section"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Pair sharp visuals with clear messaging to introduce your products and promotions.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            },
+            {
+              "value": "secondary",
+              "label": "Secondary"
+            }
+          ],
+          "default": "primary"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

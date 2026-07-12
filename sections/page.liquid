@@ -1,0 +1,92 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --heading-scale: {{ section.settings.heading_font_scale | default: 100 | divided_by: 100.0 }};
+    --body-scale: {{ section.settings.body_font_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+{% comment %}
+  This section is used in the page template to render store pages like About us
+  or Contact us.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/page
+{% endcomment %}
+
+<article class="page-section" id="Page-{{ section.id }}">
+  <div class="page-section__inner">
+    <h1 class="page-section__title">{{ page.title }}</h1>
+    <div class="page-section__content rte">
+      {{ page.content }}
+    </div>
+  </div>
+</article>
+
+{% stylesheet %}
+  .page-section {
+    padding: 56px 0;
+  }
+
+  .page-section__inner {
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+    max-width: 72ch;
+  }
+
+  .page-section__title {
+    margin: 0 0 24px;
+    font-size: calc(2em * var(--heading-scale, 1));
+  }
+
+  .page-section__content {
+    font-size: calc(1em * var(--body-scale, 1));
+  }
+
+  .page-section__content > *:first-child {
+    margin-top: 0;
+  }
+
+  .page-section__content > *:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 749px) {
+    .page-section {
+      padding: 40px 0;
+    }
+
+    .page-section__title {
+      margin-bottom: 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Body font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ]
+}
+{% endschema %}

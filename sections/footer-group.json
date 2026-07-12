@@ -1,0 +1,80 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "t:general.footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Join for first access",
+            "text": "<p>Sign up and find out right away if you've won $100 in shopping credit!</p>",
+            "placeholder": "Email address",
+            "button_label": "Subscribe",
+            "note": "",
+            "open_by_default": false
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "title": "",
+            "menu": "footer"
+          }
+        },
+        "opening": {
+          "type": "text",
+          "settings": {
+            "title": "Opening Hours",
+            "text": "<p><strong>Opening hours</strong></p><p><strong>Monday - friday:</strong> 09:00 AM - 06:00 PM<br/><strong>Saturday:</strong> 09:00 AM - 06:00 PM<br/><strong>Sunday:</strong> Closed</p>"
+          }
+        },
+        "service": {
+          "type": "text",
+          "settings": {
+            "title": "Customer Service",
+            "text": "<p><strong>Customer Service </strong>♡<br/>If you have any questions, feel free to contact us.<br/><strong>📩info@[STORE]-boutique.com</strong></p>"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter",
+        "menu",
+        "opening",
+        "service"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "title": "",
+        "text": "",
+        "brand_text": "",
+        "show_social": false,
+        "social_label_1": "Instagram",
+        "social_link_1": "",
+        "social_label_2": "TikTok",
+        "social_link_2": "",
+        "social_label_3": "Pinterest",
+        "social_link_3": "",
+        "show_language_selector": false,
+        "show_currency_selector": false,
+        "show_payment_icons": true,
+        "show_copyright": false,
+        "copyright_text": "All rights reserved.",
+        "show_powered_by": false
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

@@ -1,0 +1,440 @@
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --heading-scale: {{ section.settings.heading_font_scale | default: 100 | divided_by: 100.0 }};
+    --body-scale: {{ section.settings.body_font_scale | default: 100 | divided_by: 100.0 }};
+  }
+{% endstyle %}
+{% liquid
+  assign section_height = section.settings.height | default: 550
+  assign lazy_load_images = section.settings.lazyload_images
+  assign image_loading = 'lazy'
+  assign image_fetchpriority = 'auto'
+
+  if lazy_load_images == false
+    assign image_loading = 'eager'
+    assign image_fetchpriority = 'high'
+  endif
+
+  assign desktop_alignment = 'flex-start'
+  assign desktop_text_alignment = 'left'
+  assign has_button = false
+
+  if section.settings.layout == 'right'
+    assign desktop_alignment = 'flex-end'
+    assign desktop_text_alignment = 'right'
+  endif
+
+  if section.settings.button_label != blank and section.settings.button_link != blank
+    assign has_button = true
+  endif
+
+  assign has_content = false
+  if section.settings.subtitle != blank or section.settings.title != blank or section.settings.text != blank or has_button
+    assign has_content = true
+  endif
+
+  assign parallax_axis = 'vertical'
+  if section.settings.parallax_direction == 'left'
+    assign parallax_axis = 'horizontal'
+  endif
+%}
+
+<section
+  class="background-image-text-section full-width{% if section.settings.parallax %} background-image-text-section--parallax{% endif %}"
+  id="BackgroundImageText-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-parallax="{{ section.settings.parallax }}"
+  style="
+    --background-image-text-height: {{ section_height }}px;
+    --background-image-text-content-align: {{ desktop_alignment }};
+    --background-image-text-text-align: {{ desktop_text_alignment }};
+    --background-image-text-parallax-axis: {{ parallax_axis }};
+    --background-image-text-card-background: {{ section.settings.content_background }};
+    --background-image-text-title-color: {{ section.settings.color_scheme.settings.text }};
+    --background-image-text-body-color: color-mix(in srgb, {{ section.settings.color_scheme.settings.text }} 88%, transparent);
+    --background-image-text-subtitle-color: color-mix(in srgb, {{ section.settings.color_scheme.settings.text }} 78%, transparent);
+  "
+>
+  <div class="background-image-text-section__shell">
+    <div class="background-image-text-section__media" data-background-media>
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 2400
+          | image_tag:
+            class: 'background-image-text-section__image',
+            widths: '480, 720, 960, 1200, 1600, 2000, 2400',
+            sizes: '100vw',
+            loading: image_loading,
+            fetchpriority: image_fetchpriority
+        }}
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'background-image-text-section__image background-image-text-section__image--placeholder' }}
+      {% endif %}
+      <div class="background-image-text-section__veil"></div>
+    </div>
+
+    {% if has_content %}
+      <div class="background-image-text-section__content-wrap">
+        <div class="background-image-text-section__content">
+          {% if section.settings.subtitle != blank %}
+            <p class="background-image-text-section__subtitle">{{ section.settings.subtitle }}</p>
+          {% endif %}
+
+          {% if section.settings.title != blank %}
+            <h2 class="background-image-text-section__title">{{ section.settings.title | escape }}</h2>
+          {% endif %}
+
+          {% if section.settings.text != blank %}
+            <div class="background-image-text-section__text rte">
+              {{ section.settings.text }}
+            </div>
+          {% endif %}
+
+          {% if has_button %}
+            <div class="background-image-text-section__actions">
+              <a href="{{ section.settings.button_link }}" class="background-image-text-section__button button button--primary">
+                {{ section.settings.button_label }}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .background-image-text-section {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at top left, rgba(255, 255, 255, 0.14), transparent 38%),
+      linear-gradient(180deg, #f8f2eb 0%, #f3ebe4 100%);
+  }
+
+  .background-image-text-section__shell {
+    position: relative;
+    height: var(--background-image-text-height);
+    overflow: hidden;
+  }
+
+  .background-image-text-section__media,
+  .background-image-text-section__content-wrap {
+    position: absolute;
+    inset: 0;
+  }
+
+  .background-image-text-section__media {
+    overflow: hidden;
+    transform: scale(1.02);
+    will-change: transform;
+  }
+
+  .background-image-text-section__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    max-width: none;
+    display: block;
+    object-fit: cover;
+  }
+
+  .background-image-text-section__image--placeholder {
+    background: linear-gradient(135deg, #d9c4b1, #f7ece2);
+    fill: rgba(72, 43, 24, 0.18);
+  }
+
+  .background-image-text-section__veil {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(33, 23, 18, 0.18) 0%, rgba(33, 23, 18, 0.08) 42%, rgba(33, 23, 18, 0.28) 100%),
+      linear-gradient(180deg, rgba(14, 8, 5, 0.08) 0%, rgba(14, 8, 5, 0.3) 100%);
+  }
+
+  .background-image-text-section__content-wrap {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: var(--background-image-text-content-align);
+    width: min(var(--page-width), calc(100% - var(--page-margin) * 2));
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 56px) 0;
+  }
+
+  .background-image-text-section__content {
+    width: min(100%, 520px);
+    padding: clamp(28px, 4vw, 42px);
+    color: var(--background-image-text-title-color);
+    text-align: var(--background-image-text-text-align);
+    border-radius: var(--style-border-radius-theme);
+    background: var(--background-image-text-card-background);
+    box-shadow: 0 28px 70px rgba(25, 15, 10, 0.22);
+    backdrop-filter: blur(10px);
+  }
+
+  .background-image-text-section__subtitle {
+    margin: 0 0 14px;
+    font-size: calc(0.78rem * var(--body-scale, 1));
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--background-image-text-subtitle-color);
+  }
+
+  .background-image-text-section__title {
+    margin: 0;
+    font-size: calc(clamp(2.5rem, 5vw, 5.25rem) * var(--heading-scale, 1));
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    text-wrap: balance;
+  }
+
+  .background-image-text-section__text {
+    margin-top: 18px;
+    font-size: calc(clamp(1rem, 1.6vw, 1.1rem) * var(--body-scale, 1));
+    line-height: 1.7;
+    color: var(--background-image-text-body-color);
+  }
+
+  .background-image-text-section__text > *:first-child {
+    margin-top: 0;
+  }
+
+  .background-image-text-section__text > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .background-image-text-section__actions {
+    margin-top: 26px;
+  }
+
+  .background-image-text-section__button.button {
+    min-width: 164px;
+  }
+
+  @media (max-width: 989px) {
+    .background-image-text-section__content {
+      width: min(100%, 500px);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .background-image-text-section__shell {
+      height: auto;
+    }
+
+    .background-image-text-section__media {
+      position: relative;
+      min-height: min(calc(var(--background-image-text-height) * 0.72), 460px);
+      transform: none !important;
+    }
+
+    .background-image-text-section__content-wrap {
+      position: relative;
+      display: block;
+      width: min(100%, calc(100% - 32px));
+      margin-top: -72px;
+      padding: 0 0 28px;
+    }
+
+    .background-image-text-section__content {
+      text-align: left;
+      box-shadow: 0 20px 44px rgba(53, 30, 18, 0.12);
+      backdrop-filter: none;
+    }
+
+    .background-image-text-section__title {
+      font-size: calc(clamp(2rem, 10vw, 3.35rem) * var(--heading-scale, 1));
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const section = document.currentScript?.closest('.shopify-section')?.querySelector('.background-image-text-section');
+
+    if (!section || section.dataset.parallax !== 'true') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const media = section.querySelector('[data-background-media]');
+    if (!media) return;
+
+    let ticking = false;
+
+    const updateParallax = () => {
+      const rect = section.getBoundingClientRect();
+      const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+      const shift = (progress - 0.5) * 28;
+      const axis = getComputedStyle(section).getPropertyValue('--background-image-text-parallax-axis').trim();
+
+      if (axis === 'horizontal') {
+        media.style.transform = `translate3d(${shift}px, 0, 0) scale(1.06)`;
+      } else {
+        media.style.transform = `translate3d(0, ${shift}px, 0) scale(1.06)`;
+      }
+      ticking = false;
+    };
+
+    const requestUpdate = () => {
+      if (window.innerWidth <= 749) {
+        media.style.transform = 'none';
+        return;
+      }
+
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(updateParallax);
+    };
+
+    updateParallax();
+    document.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Background image text",
+  "tag": "section",
+  "class": "section-background-image-text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_scale",
+      "label": "Heading font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "body_font_scale",
+      "label": "Body font size",
+      "min": 60,
+      "max": 160,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Impressive"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Large image with text box"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Pair large text with a full-width image to draw attention to an important detail of your brand or product line.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Text box position",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Section height",
+      "default": 550,
+      "min": 450,
+      "max": 750,
+      "step": 100,
+      "unit": "px"
+    },
+    {
+      "type": "color_background",
+      "id": "content_background",
+      "label": "Text box background",
+      "default": "linear-gradient(145deg, rgba(56, 34, 22, 0.78), rgba(95, 58, 39, 0.55))"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Text color scheme",
+      "info": "Controls the heading, body, and subtitle text colors. Use Scheme 2 (dark) for light text on dark images.",
+      "default": "scheme-2"
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Enable parallax",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "parallax_direction",
+      "label": "Parallax direction",
+      "default": "top",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "lazyload_images",
+      "label": "Lazy load images",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Background image text"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer", "header", "custom.popups"]
+  }
+}
+{% endschema %}
