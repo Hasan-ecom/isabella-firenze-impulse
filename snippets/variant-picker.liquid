@@ -1,0 +1,159 @@
+{% if product.has_only_default_variant == false %}
+  {%- liquid
+    assign variant_button_size = block.settings.variant_button_size | default: 'small'
+    assign variant_btn_padding = '0.5rem 0.85rem'
+    if variant_button_size == 'large'
+      assign variant_btn_padding = '0.9rem 1.4rem'
+    endif
+  -%}
+  <div
+    class="product-info__variants"
+    data-variant-picker
+    style="--swatch-size: {{ block.settings.swatch_size | default: 56 }}px; --variant-btn-padding: {{ variant_btn_padding }}; --variant-btn-font-size: {{ block.settings.variant_button_font_size | default: 15 }}px;"
+  >
+    {% liquid
+      assign color_trigger_words = block.settings.color_trigger_words | default: 'color, colour, couleur' | downcase | split: ','
+    %}
+    {% for option in product.options_with_values %}
+      {% liquid
+        assign option_name_downcase = option.name | downcase
+        assign is_color = false
+        assign picker_mode = 'normal'
+
+        for trigger_word in color_trigger_words
+          assign normalized_trigger_word = trigger_word | strip
+          if normalized_trigger_word != blank and option_name_downcase == normalized_trigger_word
+            assign is_color = true
+            break
+          endif
+        endfor
+
+        if is_color
+          assign picker_mode = block.settings.color_display | default: 'color_swatch'
+        endif
+      %}
+
+      <fieldset class="product-info__option-group" data-option-position="{{ option.position }}">
+        <legend class="product-info__option-header {% if forloop.index == 2 %}size{% endif %}">
+          <span>{{ option.name }}</span>
+          <span class="product-info__option-value" data-selected-option="{{ option.position }}">
+            {{ option.selected_value }}
+          </span>
+        </legend>
+
+        <div class="product-info__option-values product-info__option-values--{{ picker_mode }} {% if picker_mode == 'color_swatch' and block.settings.show_color_labels == false %}product-info__option-values--labels-hidden{% endif %}">
+          {% for value in option.values %}
+            {% liquid
+              assign normalized_value = value | strip | downcase
+              if picker_mode == 'color_swatch'
+                assign button_classes = 'product-info__color-swatch'
+              else
+                assign button_classes = 'product-info__option-button'
+                assign button_classes = button_classes | append: ' '
+                assign button_classes = button_classes | append: 'product-info__option-button--' | append: picker_mode
+              endif
+              assign button_style = ''
+              assign image_markup = ''
+              assign swatch_label_style = ''
+              assign swatch_image = blank
+              assign variant_price = ''
+              assign uses_color_label_setting = false
+
+              if value == option.selected_value
+                assign button_classes = button_classes | append: ' is-active'
+              endif
+
+              if is_color and picker_mode == 'color_swatch'
+                assign uses_color_label_setting = true
+              endif
+
+              if is_color and picker_mode == 'variant_image'
+                assign uses_color_label_setting = true
+              endif
+
+              if picker_mode == 'color_swatch'
+                assign button_style = 'background:' | append: value | append: ';'
+
+                assign swatch_mapping_lines = settings.color_swatch_mappings | newline_to_br | split: '<br />'
+                for mapping_line in swatch_mapping_lines
+                  assign mapping_parts = mapping_line | split: ':'
+                  assign mapping_key = mapping_parts.first | strip | downcase
+                  if mapping_key == normalized_value
+                    assign mapping_value = mapping_line | remove_first: mapping_parts.first | remove_first: ':' | strip
+                    if mapping_value != blank
+                      assign button_style = 'background:' | append: mapping_value | append: ';'
+                      assign swatch_label_style = 'background: rgba(255, 255, 255, 0.78);'
+                    endif
+                    break
+                  endif
+                endfor
+              elsif picker_mode == 'variant_image' or picker_mode == 'polaroid'
+                for variant in product.variants
+                  assign option_index = option.position | minus: 1
+                  if variant.options[option_index] == value
+                    if variant_price == blank
+                      assign variant_price = variant.price | money_with_currency
+                    endif
+
+                    if variant.featured_media and variant.featured_media.preview_image
+                      assign swatch_image = variant.featured_media.preview_image
+                    elsif variant.image
+                      assign swatch_image = variant.image
+                    elsif variant.featured_image
+                      assign swatch_image = variant.featured_image
+                    endif
+
+                    if swatch_image != blank
+                      capture image_markup
+                        echo swatch_image | image_url: width: 320, height: 420, crop: 'center' | image_tag: loading: 'lazy', class: 'product-info__option-image', widths: '120, 200, 320'
+                      endcapture
+                    endif
+
+                    if image_markup != blank
+                      break
+                    endif
+                  endif
+                endfor
+              endif
+            %}
+            <button
+              type="button"
+              class="{{ button_classes }}"
+              data-option-button
+              data-option-position="{{ option.position }}"
+              data-option-name="{{ option.name }}"
+              data-option-value="{{ value | escape }}"
+              aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+              data-unavailable-label="{{ 'product.sold_out' | t }}"
+              {% if button_style != blank %}
+                style="{{ button_style }}"
+              {% endif %}
+            >
+              {% if picker_mode == 'variant_image' or picker_mode == 'polaroid' %}
+                {% if image_markup != blank %}
+                  <span class="product-info__option-image-wrap">{{ image_markup }}</span>
+                {% else %}
+                  <span class="product-info__option-image-wrap product-info__option-image-wrap--fallback">{{ value | slice: 0 }}</span>
+                {% endif %}
+              {% endif %}
+              {% if picker_mode == 'polaroid' %}
+                <span class="product-info__polaroid-caption">
+                  <span class="product-info__polaroid-name">{{ value }}</span>
+                  {% if variant_price != blank %}
+                    <span class="product-info__polaroid-price">{{ variant_price }}</span>
+                  {% endif %}
+                </span>
+              {% elsif uses_color_label_setting %}
+                {% if block.settings.show_color_labels %}
+                  <span class="{% if picker_mode == 'color_swatch' %}product-info__color-swatch-label{% else %}product-info__option-label{% endif %}" {% if swatch_label_style != blank %}style="{{ swatch_label_style }}"{% endif %}>{{ value }}</span>
+                {% endif %}
+              {% else %}
+                <span class="product-info__option-label">{{ value }}</span>
+              {% endif %}
+            </button>
+          {% endfor %}
+        </div>
+      </fieldset>
+    {% endfor %}
+  </div>
+{% endif %}

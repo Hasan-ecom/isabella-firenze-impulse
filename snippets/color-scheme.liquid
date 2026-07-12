@@ -1,0 +1,15 @@
+{% comment %}
+  Renders color scheme CSS custom properties scoped to a section.
+  Accepts:
+    - color_scheme: {Object} section.settings.color_scheme
+    - section_id:   {String} section.id
+{% endcomment %}
+{% if color_scheme != blank %}
+  <style>
+    #shopify-section-{{ section_id }} {
+      --color-background: {{ color_scheme.settings.background }};
+      --color-foreground: {{ color_scheme.settings.text }};
+      --colorBorder: color-mix(in srgb, {{ color_scheme.settings.text }} 14%, transparent);
+    }
+  </style>
+{% endif %}

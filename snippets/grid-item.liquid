@@ -1,0 +1,205 @@
+{% liquid
+  assign card_product = product
+  assign card_sizes = sizes | default: '100vw'
+  assign placeholder_number = placeholder_index | default: 1
+  assign tile_image_size = settings.product_tile_image_size | default: 'square'
+  assign quick_shop_label = settings.quick_shop_button_text | strip | default: 'Quick view'
+  assign show_title = show_title
+  if show_title == nil
+    assign show_title = settings.product_tile_show_title
+  endif
+
+  assign show_price = show_price
+  if show_price == nil
+    assign show_price = settings.product_tile_show_price
+  endif
+
+  assign show_compare_at_price = show_compare_at_price
+  if show_compare_at_price == nil
+    assign show_compare_at_price = settings.product_tile_show_compare_at_price
+  endif
+
+  assign show_vendor = show_vendor
+  if show_vendor == nil
+    assign show_vendor = settings.product_tile_show_vendor
+  endif
+
+  assign show_quick_shop = show_quick_shop
+  if show_quick_shop == nil
+    assign show_quick_shop = settings.enable_quick_shop
+  endif
+
+  assign zoom_image = settings.product_tile_zoom_image
+  assign show_second_image = show_second_image
+  if show_second_image == nil
+    assign show_second_image = settings.product_tile_show_second_image
+  endif
+
+  assign show_swatches = show_swatches
+  if show_swatches == nil
+    assign show_swatches = settings.enable_color_swatches
+  endif
+
+  assign swatch_style = settings.product_tile_swatch_style | default: 'round'
+  assign secondary_image = blank
+  assign color_option = blank
+  assign compare_at_price = blank
+  assign discount_percentage = blank
+
+  if card_product != blank and card_product.compare_at_price > card_product.price
+    assign compare_at_price = card_product.compare_at_price
+    if card_product.compare_at_price > 0
+      assign discount_percentage = card_product.compare_at_price | minus: card_product.price | times: 100 | divided_by: card_product.compare_at_price
+    endif
+  endif
+
+  if card_product != blank and show_second_image and card_product.images.size > 1
+    assign secondary_image = card_product.images[1]
+  endif
+
+  if card_product != blank and show_swatches
+    for option in card_product.options_with_values
+      assign option_name = option.name | downcase
+
+      if option_name contains 'color' or option_name contains 'colour'
+        assign color_option = option
+        break
+      endif
+    endfor
+  endif
+%}
+
+<article class="product-tile product-tile--{{ tile_image_size }}{% if zoom_image and tile_image_size != 'natural' %} product-tile--zoom{% endif %}{% if secondary_image != blank %} product-tile--has-secondary{% endif %}">
+  {% if card_product != blank %}
+    <a class="product-tile__link" href="{{ card_product.url }}">
+      <div class="product-tile__media">
+        {% if settings.product_tile_show_sale_badge and discount_percentage != blank and discount_percentage > 0 %}
+          <span class="product-tile__badge product-tile__badge--{{ settings.product_tile_sale_badge_position | default: 'top-left' }}">
+            -{{ discount_percentage }}%
+          </span>
+        {% endif %}
+
+        {% if card_product.featured_image != blank %}
+          {{
+            card_product.featured_image
+            | image_url: width: 900
+            | image_tag:
+              class: 'product-tile__image product-tile__image--primary',
+              widths: '320, 480, 640, 900',
+              sizes: card_sizes,
+              loading: 'lazy',
+              alt: card_product.featured_image.alt | default: card_product.title
+          }}
+
+          {% if secondary_image != blank %}
+            {{
+              secondary_image
+              | image_url: width: 900
+              | image_tag:
+                class: 'product-tile__image product-tile__image--secondary',
+                widths: '320, 480, 640, 900',
+                sizes: card_sizes,
+                loading: 'lazy',
+                alt: secondary_image.alt | default: card_product.title
+            }}
+          {% endif %}
+        {% else %}
+          {{ 'product-1' | placeholder_svg_tag: 'product-tile__image product-tile__image--placeholder' }}
+        {% endif %}
+
+      </div>
+
+      <div class="product-tile__content">
+        {% if show_vendor and card_product.vendor != blank %}
+          <p class="product-tile__vendor">{{ card_product.vendor | escape }}</p>
+        {% endif %}
+
+        {% if show_title %}
+          <h3 class="product-tile__title">{{ card_product.title | escape }}</h3>
+        {% endif %}
+
+        {% if show_price %}
+          <p class="product-tile__price">
+            <span class="product-tile__price-current">{{ card_product.price | money_with_currency }}</span>
+            {% if show_compare_at_price and compare_at_price != blank %}
+              <span class="product-tile__price-compare">{{ compare_at_price | money_with_currency }}</span>
+            {% endif %}
+          </p>
+          {%- assign tile_variant = card_product.selected_or_first_available_variant -%}
+          {%- if tile_variant.unit_price_measurement -%}
+            <p class="product-tile__unit-price">
+              {{ tile_variant.unit_price | money_with_currency }}
+              /
+              {%- if tile_variant.unit_price_measurement.reference_value != 1 -%}
+                {{ tile_variant.unit_price_measurement.reference_value }}
+              {%- endif -%}
+              {{ tile_variant.unit_price_measurement.reference_unit }}
+            </p>
+          {%- endif -%}
+        {% endif %}
+
+        {% if color_option != blank %}
+          <div class="product-tile__swatches product-tile__swatches--{{ swatch_style }}" aria-label="{{ color_option.name | escape }}">
+            {% for value in color_option.values limit: 6 %}
+              {% liquid
+                assign swatch_name = value.name | default: value
+                assign swatch_available = true
+                assign swatch_color = value.swatch.color | default: swatch_name | downcase
+                assign swatch_image = value.swatch.image
+
+                if value.available == false
+                  assign swatch_available = false
+                endif
+              %}
+
+              <button
+                type="button"
+                class="product-tile__swatch{% unless swatch_available %} product-tile__swatch--unavailable{% endunless %}"
+                aria-label="{{ swatch_name | escape }}"
+                {% if swatch_image != blank %}
+                  style="background-image: url('{{ swatch_image | image_url: width: 48 }}');"
+                {% else %}
+                  style="background-color: {{ swatch_color }};"
+                {% endif %}
+              ></button>
+            {% endfor %}
+
+            {% if color_option.values.size > 6 %}
+              <span class="product-tile__swatch-count">+{{ color_option.values.size | minus: 6 }}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </a>
+    {% if show_quick_shop %}
+      <button type="button" class="product-tile__quick-shop button button--secondary" data-quick-shop="{{ card_product.url }}" aria-label="{{ quick_shop_label }}: {{ card_product.title | escape }}">{{ quick_shop_label }}</button>
+    {% endif %}
+  {% else %}
+    {% liquid
+      assign placeholder_name = 'product-' | append: placeholder_number
+    %}
+
+    <div class="product-tile__link product-tile__link--placeholder">
+      <div class="product-tile__media">
+        {{ placeholder_name | placeholder_svg_tag: 'product-tile__image product-tile__image--placeholder' }}
+      </div>
+
+      <div class="product-tile__content">
+        {% if show_vendor %}
+          <p class="product-tile__vendor">{{ 'general.vendor_placeholder' | t }}</p>
+        {% endif %}
+        {% if show_title %}
+          <h3 class="product-tile__title">{{ 'general.product_placeholder' | t }} {{ placeholder_number }}</h3>
+        {% endif %}
+        {% if show_price %}
+          <p class="product-tile__price">
+            <span class="product-tile__price-current">{{ 1999 | money_with_currency }}</span>
+            {% if show_compare_at_price %}
+              <span class="product-tile__price-compare">{{ 2499 | money_with_currency }}</span>
+            {% endif %}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</article>

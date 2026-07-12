@@ -1,0 +1,87 @@
+{% comment %}
+  Renders the inner content of a footer column block.
+  Accepts: block (required), placement: 'mobile' | 'desktop' (required for newsletter unique IDs)
+{% endcomment %}
+
+{% case block.type %}
+  {% when 'menu' %}
+    <ul class="footer__link-list" role="list">
+      {% for link in block.settings.menu.links %}
+        <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+      {% endfor %}
+    </ul>
+
+  {% when 'newsletter' %}
+    {% if block.settings.text != blank %}
+      <div class="footer__card-copy rte">{{ block.settings.text }}</div>
+    {% endif %}
+
+    {% form 'customer', class: 'footer__newsletter-form' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+
+      <div class="footer__newsletter-fields{% if block.settings.arrow_inside %} footer__newsletter-fields--inline{% endif %}">
+        <label class="visually-hidden" for="FooterEmail-{{ block.id }}-{{ placement }}">{{ 'contact.form.email' | t }}</label>
+        <input
+          id="FooterEmail-{{ block.id }}-{{ placement }}"
+          type="email"
+          name="contact[email]"
+          class="footer__newsletter-input"
+          value="{% if customer %}{{ customer.email }}{% endif %}"
+          placeholder="{{ block.settings.placeholder | escape }}"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="email"
+          {% if form.errors %}aria-invalid="true"{% endif %}
+          required
+        >
+        {% if block.settings.arrow_inside %}
+          <button type="submit" class="footer__newsletter-button footer__newsletter-button--arrow" aria-label="{{ block.settings.button_label | default: 'Subscribe' | escape }}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        {% else %}
+          <button type="submit" class="footer__newsletter-button">
+            {{ block.settings.button_label | default: 'Subscribe' }}
+          </button>
+        {% endif %}
+      </div>
+
+      {% if form.posted_successfully? %}
+        <p class="footer__form-message footer__form-message--success">
+          {{ 'newsletter.success' | t | default: 'Thanks for subscribing.' }}
+        </p>
+      {% endif %}
+
+      {% if form.errors %}
+        <div class="footer__form-message footer__form-message--error">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+    {% endform %}
+
+    {% if block.settings.note != blank %}
+      <p class="footer__note">{{ block.settings.note }}</p>
+    {% endif %}
+
+  {% when 'contact' %}
+    {% if block.settings.text != blank %}
+      <div class="footer__detail rte">{{ block.settings.text }}</div>
+    {% endif %}
+
+    <ul class="footer__contact-list" role="list">
+      {% if block.settings.email != blank %}
+        <li><a href="mailto:{{ block.settings.email }}">{{ block.settings.email }}</a></li>
+      {% endif %}
+      {% if block.settings.phone != blank %}
+        {% assign phone_href = block.settings.phone | replace: ' ', '' | replace: '(', '' | replace: ')', '' | replace: '-', '' %}
+        <li><a href="tel:{{ phone_href }}">{{ block.settings.phone }}</a></li>
+      {% endif %}
+    </ul>
+
+  {% when 'text' %}
+    {% if block.settings.text != blank %}
+      <div class="footer__detail rte">{{ block.settings.text }}</div>
+    {% endif %}
+{% endcase %}

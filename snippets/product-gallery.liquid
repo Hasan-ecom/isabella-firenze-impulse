@@ -1,0 +1,179 @@
+{% liquid
+  assign gallery_layout = section.settings.gallery_layout
+  assign mobile_mode = section.settings.mobile_gallery_mode
+%}
+
+<div
+  class="product-gallery product-gallery--{{ gallery_layout }} product-gallery--mobile-{{ mobile_mode }} product-gallery--zoom-{{ section.settings.zoom_button_position }}{% if section.settings.zoom_button_style == 'icon' %} product-gallery--zoom-icon{% endif %}"
+  data-product-gallery
+>
+  <div class="product-gallery__viewport" data-gallery-viewport>
+    {% for media in product.media %}
+      {% assign is_active = false %}
+      {% if current_variant.featured_media and current_variant.featured_media.id == media.id %}
+        {% assign is_active = true %}
+      {% elsif current_variant.featured_media == blank and forloop.first %}
+        {% assign is_active = true %}
+      {% endif %}
+
+      {% assign media_loading = 'lazy' %}
+      {% assign media_fetch_priority = 'auto' %}
+      {% if is_active %}
+        {% assign media_loading = 'eager' %}
+        {% assign media_fetch_priority = 'high' %}
+      {% endif %}
+
+      <article
+        class="product-gallery__item {% if is_active %}is-active{% endif %}"
+        data-media-id="{{ media.id }}"
+        data-media-type="{{ media.media_type }}"
+        data-media-position="{{ forloop.index0 }}"
+        {% if media == current_variant.featured_media %}
+          data-featured-variant-media="true"
+        {% endif %}
+      >
+        {% if section.settings.show_zoom_button %}
+          <button
+            type="button"
+            class="product-gallery__zoom"
+            data-gallery-zoom
+            aria-label="{{ 'product.gallery.open_media' | t: title: product.title }}"
+          >
+            {% if section.settings.zoom_button_style == 'icon' %}
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                <path d="M20 20L15.5 15.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                <path d="M11 8.5V13.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                <path d="M8.5 11H13.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              </svg>
+              <span class="visually-hidden">{{ 'product.gallery.zoom' | t }}</span>
+            {% else %}
+              {{ 'product.gallery.zoom' | t }}
+            {% endif %}
+          </button>
+        {% endif %}
+
+        {% case media.media_type %}
+          {% when 'image' %}
+            {{
+              media
+              | image_url: width: 1800
+              | image_tag:
+                loading: media_loading,
+                class: 'product-gallery__image',
+                widths: '600, 900, 1200, 1500, 1800',
+                fetchpriority: media_fetch_priority
+            }}
+          {% when 'video' %}
+            {{ media | video_tag: controls: true, class: 'product-gallery__video' }}
+          {% when 'external_video' %}
+            {{ media | external_video_tag: class: 'product-gallery__video' }}
+          {% when 'model' %}
+            {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__model' }}
+          {% else %}
+            <div class="product-gallery__fallback">{{ 'product.gallery.unavailable' | t }}</div>
+        {% endcase %}
+      </article>
+    {% endfor %}
+  </div>
+
+  {% if product.media.size > 1 %}
+    <div class="product-gallery__controls">
+      <button type="button" class="product-gallery__arrow" data-gallery-prev aria-label="{{ 'product.gallery.previous' | t }}">
+        <span>&larr;</span>
+      </button>
+
+      <div class="product-gallery__thumbs" data-gallery-thumbs>
+        {% for media in product.media %}
+          <button
+            type="button"
+            class="product-gallery__thumb {% if current_variant.featured_media and current_variant.featured_media.id == media.id %}is-active{% elsif current_variant.featured_media == blank and forloop.first %}is-active{% endif %}"
+            data-gallery-thumb
+            data-target-media-id="{{ media.id }}"
+            aria-label="{{ 'product.gallery.show_media' | t: index: forloop.index }}"
+          >
+            {% if media.preview_image %}
+              {{
+                media.preview_image
+                | image_url: width: 240, height: 240, crop: 'center'
+                | image_tag: loading: 'lazy', class: 'product-gallery__thumb-image'
+              }}
+            {% endif %}
+          </button>
+        {% endfor %}
+      </div>
+
+      <div class="product-gallery__dots" data-gallery-dots>
+        {% for media in product.media %}
+          <button
+            type="button"
+            class="product-gallery__dot {% if current_variant.featured_media and current_variant.featured_media.id == media.id %}is-active{% elsif current_variant.featured_media == blank and forloop.first %}is-active{% endif %}"
+            data-gallery-thumb
+            data-target-media-id="{{ media.id }}"
+            aria-label="{{ 'product.gallery.go_to_media' | t: index: forloop.index }}"
+          ></button>
+        {% endfor %}
+      </div>
+
+      <button type="button" class="product-gallery__arrow" data-gallery-next aria-label="{{ 'product.gallery.next' | t }}">
+        <span>&rarr;</span>
+      </button>
+    </div>
+  {% endif %}
+
+  <div class="product-gallery__modal-templates" hidden>
+    {% for media in product.media %}
+      <template data-gallery-modal-template="{{ media.id }}">
+        <div class="product-gallery__modal-media" data-modal-media-id="{{ media.id }}" data-media-type="{{ media.media_type }}">
+          {% case media.media_type %}
+            {% when 'image' %}
+              {{
+                media
+                | image_url: width: 2400
+                | image_tag:
+                  loading: 'eager',
+                  class: 'product-gallery__modal-image',
+                  widths: '900, 1200, 1600, 2000, 2400'
+              }}
+            {% when 'video' %}
+              {{ media | video_tag: controls: true, autoplay: false, class: 'product-gallery__modal-video' }}
+            {% when 'external_video' %}
+              {{ media | external_video_tag: class: 'product-gallery__modal-video' }}
+            {% when 'model' %}
+              {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true, class: 'product-gallery__modal-model' }}
+            {% else %}
+              <div class="product-gallery__fallback">{{ 'product.gallery.unavailable' | t }}</div>
+          {% endcase %}
+        </div>
+      </template>
+    {% endfor %}
+  </div>
+
+  <dialog class="product-gallery__modal" data-gallery-modal aria-label="{{ 'product.gallery.zoom' | t }}">
+    <button type="button" class="product-gallery__modal-close" data-gallery-close aria-label="{{ 'product.gallery.close_zoomed_media' | t }}">{{ 'general.close' | t }}</button>
+    <div class="product-gallery__modal-body">
+      <div class="product-gallery__modal-stage" data-gallery-modal-body></div>
+      {% if product.media.size > 1 %}
+        <div class="product-gallery__modal-thumbs" data-gallery-modal-thumbs>
+          {% for media in product.media %}
+            <button
+              type="button"
+              class="product-gallery__modal-thumb{% if current_variant.featured_media and current_variant.featured_media.id == media.id %} is-active{% elsif current_variant.featured_media == blank and forloop.first %} is-active{% endif %}"
+              data-gallery-modal-thumb
+              data-target-media-id="{{ media.id }}"
+              aria-label="{{ 'product.gallery.show_media' | t: index: forloop.index }}"
+            >
+              {% if media.preview_image %}
+                {{
+                  media.preview_image
+                  | image_url: width: 240, height: 240, crop: 'center'
+                  | image_tag: loading: 'lazy', class: 'product-gallery__thumb-image'
+                }}
+              {% endif %}
+            </button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </dialog>
+</div>

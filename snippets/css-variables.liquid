@@ -1,0 +1,57 @@
+{% style %}
+  {% # Loads all font variantions with display: swap %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  :root {
+    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-primary--style: {{ settings.type_primary_font.style }};
+    --font-primary--weight: {{ settings.type_primary_font.weight }};
+    --font-heading--family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading--style: {{ settings.type_heading_font.style }};
+    --font-heading--weight: {{ settings.type_heading_font.weight }};
+    --type-body-size: {{ settings.type_body_size }}px;
+    --type-body-line-height: {{ settings.type_body_line_height | divided_by: 100.0 }};
+    --type-body-letter-spacing: {{ settings.type_body_letter_spacing | divided_by: 100.0 }}em;
+    --type-heading-line-height: {{ settings.type_heading_line_height | divided_by: 100.0 }};
+    --type-heading-letter-spacing: {{ settings.type_heading_letter_spacing | divided_by: 100.0 }}em;
+    --page-width: {{ settings.max_page_width }}px;
+    --page-margin: {{ settings.min_page_margin }}px;
+    --style-border-radius-theme: {{ settings.theme_corner_radius }}px;
+    --style-border-radius-product-tile: {{ settings.product_tile_corner_radius | default: settings.theme_corner_radius }}px;
+    --color-background: {{ settings.background_color }};
+    --color-foreground: {{ settings.foreground_color }};
+    --colorBorder: color-mix(in srgb, {{ settings.foreground_color }} 14%, transparent);
+    --color-sale-price: {{ settings.sale_price_color }};
+    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+    --style-border-radius-buttons: {{ settings.button_corner_radius }}px;
+    --button-primary-background: {{ settings.button_primary_background }};
+    --button-primary-text: {{ settings.button_primary_text }};
+    --button-primary-border: {{ settings.button_primary_border }};
+    --button-primary-background-hover: {{ settings.button_primary_background_hover }};
+    --button-primary-text-hover: {{ settings.button_primary_text_hover }};
+    --button-primary-border-hover: {{ settings.button_primary_border_hover }};
+    --button-secondary-background: {{ settings.button_secondary_background }};
+    --button-secondary-text: {{ settings.button_secondary_text }};
+    --button-secondary-border: {{ settings.button_secondary_border }};
+    --button-secondary-background-hover: {{ settings.button_secondary_background_hover }};
+    --button-secondary-text-hover: {{ settings.button_secondary_text_hover }};
+    --button-secondary-border-hover: {{ settings.button_secondary_border_hover }};
+    --product-tile-price-color: {{ settings.product_tile_price_color | default: 'rgba(16, 24, 32, 0.72)' }};
+    --product-tile-compare-price-color: {{ settings.product_tile_compare_price_color | default: 'rgba(16, 24, 32, 0.48)' }};
+    --product-tile-badge-background: {{ settings.product_tile_sale_badge_background | default: '#111111' }};
+    --product-tile-badge-text-color: {{ settings.product_tile_sale_badge_text_color | default: '#FFFFFF' }};
+    --product-tile-badge-font-size: {{ settings.product_tile_sale_badge_font_size | default: 13 }}px;
+    --product-tile-badge-border-radius: {{ settings.product_tile_sale_badge_corner_radius | default: 999 }}px;
+    --product-tile-badge-offset-x: {{ settings.product_tile_sale_badge_offset_x | default: 12 }}px;
+    --product-tile-badge-offset-y: {{ settings.product_tile_sale_badge_offset_y | default: 12 }}px;
+    --product-tile-badge-padding-y: {{ settings.product_tile_sale_badge_padding_y | default: 6 }}px;
+    --product-tile-badge-padding-x: {{ settings.product_tile_sale_badge_padding_x | default: 10 }}px;
+  }
+{% endstyle %}

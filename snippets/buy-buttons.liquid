@@ -1,0 +1,24 @@
+<div class="product-info__buy-buttons" data-buy-buttons>
+  <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id-input>
+  <button
+    type="submit"
+    name="add"
+    class="button button--primary product-info__add"
+    {% unless current_variant.available %}
+      disabled
+    {% endunless %}
+    data-add-to-cart
+  >
+    <span data-add-to-cart-label>
+      {% if current_variant.available %}
+        {{ 'product.add_to_cart' | t }}
+      {% else %}
+        {{ 'product.sold_out' | t }}
+      {% endif %}
+    </span>
+  </button>
+
+  <div class="product-info__payment-terms">
+    {{ form | payment_terms }}
+  </div>
+</div>
