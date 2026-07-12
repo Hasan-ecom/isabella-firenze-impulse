@@ -1,0 +1,7 @@
+# Shopify CLI theme environments.
+# Fill in your own store and theme ID, then push with:
+#   shopify theme push --environment production
+#
+# [environments.production]
+# store = "your-store.myshopify.com"
+# theme = "000000000000"
